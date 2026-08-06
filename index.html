@@ -9,6 +9,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF-AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -24,13 +28,10 @@
     <!-- HALAMAN LOGIN (Tampil pertama kali)        -->
     <!-- ========================================== -->
     <div id="loginSection" class="min-h-screen flex items-center justify-center fade-in absolute inset-0 z-50 bg-[url('pattern.jpeg')] bg-repeat bg-center bg-auto">
-        <!-- Overlay Merah Gelap + Blur -->
         <div class="absolute inset-0 bg-red-100/70 z-0"></div>
         
-        <!-- Kontainer Form -->
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative z-10 mx-4">
             <div class="text-center mb-6">
-                <!-- Logo Brand -->
                 <img src="brand.webp" alt="Logo OSN SD Waru 81" class="mx-auto w-full max-w-xs h-auto mb-2 object-contain drop-shadow-md">
             </div>
             <form onsubmit="prosesLogin(event)">
@@ -58,7 +59,6 @@
         <aside id="sidebar" class="bg-red-900 text-white w-64 flex-shrink-0 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 sidebar-transition z-40 flex flex-col">
             <div class="p-6 border-b border-red-700 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-red-200">OSN SD WARU</h2>
-                <!-- Tombol tutup sidebar (Hanya di HP) -->
                 <button onclick="toggleSidebar()" class="md:hidden text-gray-300 hover:text-white">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -114,11 +114,6 @@
                 
                 <!-- 1. HALAMAN DASHBOARD -->
                 <div id="pageDashboard" class="page-section fade-in">
-                    <!-- <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang!</h2>
-                        <p class="text-gray-600">Halo, selamat datang di portal pendaftaran Olimpiade Sains Nasional (OSN) tingkat SD Kecamatan Waru dalam rangka memeriahkan HUT RI ke-81.</p>
-                    </div> -->
-
                     <!-- Rekap Status Pendaftaran (Flash Cards) -->
                     <div id="rekapContainer" class="hidden">
                         <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2"><i class="fas fa-chart-pie mr-2 text-blue-600"></i>Status Pendaftaran</h3>
@@ -148,13 +143,41 @@
                 <div id="pageJuknis" class="page-section fade-in hidden">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Petunjuk Teknis & Aturan</h2>
-                        <div class="space-y-4 text-gray-700">
-                            <ul class="list-disc list-inside space-y-2 mt-4 ml-2">
-                                <li>Siswa yang boleh didaftarkan hanya siswa <strong>Kelas 4</strong> atau <strong>Kelas 5</strong>.</li>
-                                <li>Satu (1) siswa hanya boleh mendaftar untuk satu (1) mata pelajaran lomba.</li>
-                                <li>Setiap sekolah <strong>wajib</strong> mendaftarkan perwakilan maksimal 1 siswa per mata pelajaran (Matematika, IPA, IPS).</li>
-                                <li>Keputusan panitia bersifat mutlak dan tidak dapat diganggu gugat.</li>
-                            </ul>
+                        
+                        <h3 class="text-lg font-bold text-gray-800 mb-3"><i class="fas fa-clipboard-list mr-2 text-blue-600"></i>A. Syarat Peserta</h3>
+                        <div class="space-y-4 text-gray-700 text-justify mb-8">
+                            <ol class="list-decimal list-outside space-y-3 ml-5">
+                                <li>Setiap sekolah wajib mengirimkan peserta pada 3 bidang studi lomba OSN, yaitu Matematika, Ilmu Pengetahuan Alam (IPA), dan Ilmu Pengetahuan Sosial (IPS).</li>
+                                <li>Peserta merupakan murid kelas 4 atau kelas 5 yang ditunjuk oleh sekolah, dengan ketentuan setiap bidang lomba diwakili oleh 1 (satu) orang peserta.</li>
+                                <li>Setiap peserta hanya diperbolehkan mengikuti 1 (satu) bidang lomba dan tidak diperkenankan mengikuti lebih dari satu bidang lomba.</li>
+                                <li>Syarat pendaftaran: Fotocopy Raport/Surat Keterangan Aktif dari Kepala Sekolah.</li>
+                            </ol>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-800 mb-3"><i class="fas fa-calendar-alt mr-2 text-blue-600"></i>B. Jadwal Kegiatan</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <h4 class="font-bold text-blue-800 mb-3 uppercase text-sm tracking-wider">Jadwal Pendaftaran</h4>
+                                <ul class="text-blue-900 space-y-2">
+                                    <li><i class="fas fa-play-circle w-5 text-blue-600"></i> <strong>Dibuka:</strong> <span id="infoJadwalMulai">Memuat data...</span></li>
+                                    <li><i class="fas fa-stop-circle w-5 text-red-500"></i> <strong>Ditutup:</strong> <span id="infoJadwalTutup">Memuat data...</span></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                <h4 class="font-bold text-green-800 mb-3 uppercase text-sm tracking-wider">Jadwal Pelaksanaan</h4>
+                                <ul class="text-green-900 space-y-2">
+                                    <li><i class="fas fa-clock w-5 text-green-600"></i> <strong>Hari, Tanggal:</strong> Rabu, 26 Agustus 2026</li>
+                                    <li><i class="fas fa-hourglass-half w-5 text-green-600"></i> <strong>Waktu:</strong> 07.00 WIB - Selesai</li>
+                                    <li><i class="fas fa-map-marker-alt w-5 text-red-600"></i> <strong>Tempat:</strong> SD Negeri Waru Barat 4</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="border-t pt-5">
+                            <a href="#" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
+                                <i class="fas fa-file-pdf mr-2 text-xl"></i> Unduh Juknis Lengkap (PDF)
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -181,6 +204,10 @@
                                         <th class="p-3 text-sm font-semibold text-gray-600">NISN</th>
                                         <th class="p-3 text-sm font-semibold text-gray-600">Kelas</th>
                                         <th class="p-3 text-sm font-semibold text-gray-600">Mapel</th>
+                                        
+                                        <!-- === TAMBAHAN BARU: Header Lampiran === -->
+                                        <th class="p-3 text-sm font-semibold text-gray-600 text-center">Lampiran</th>
+                                        
                                         <th class="p-3 text-sm font-semibold text-gray-600 text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -238,6 +265,16 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap Siswa</label>
                     <input type="text" id="inputNama" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
                 </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tempat Lahir</label>
+                        <input type="text" id="inputTempat" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Lahir</label>
+                        <input type="date" id="inputTglLahir" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                </div>
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas</label>
                     <select id="inputKelas" class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
@@ -255,6 +292,10 @@
                         <option value="IPS">IPS</option>
                     </select>
                 </div>
+                <div class="mb-6 border border-dashed border-gray-400 p-3 rounded bg-gray-50">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Suket Aktif (Max 2MB)</label>
+                    <input type="file" id="inputSuket" accept=".pdf, image/jpeg, image/png" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required>
+                </div>
                 <div class="flex justify-end space-x-3 pt-2 border-t">
                     <button type="button" onclick="tutupModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded transition">Batal</button>
                     <button type="submit" id="btnSimpan" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded shadow transition">Simpan Data</button>
@@ -267,6 +308,7 @@
     <!-- LOGIKA JAVASCRIPT                          -->
     <!-- ========================================== -->
     <script>
+        // Ganti SCRIPT_URL dengan URL Deployment terbaru dari code.gs milikmu!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTvIr5M2NfmTjSRNfM_V9cyBDyCfvPEGqAOxb0ann9nKnDP5AHR1TPBZ7mw2ezVm69/exec'; 
         let globalDataPeserta = [];
 
@@ -343,6 +385,11 @@
                     if(document.getElementById('inputTglMulai')) {
                         document.getElementById('inputTglMulai').value = data.mulai;
                         document.getElementById('inputTglSelesai').value = data.selesai;
+                    }
+
+                    if(document.getElementById('infoJadwalMulai')) {
+                        document.getElementById('infoJadwalMulai').innerText = formatTanggalIndo(data.mulai);
+                        document.getElementById('infoJadwalTutup').innerText = formatTanggalIndo(data.selesai);
                     }
 
                     const hariIni = new Date();
@@ -546,7 +593,18 @@
                     const isAdmin = sessionStorage.getItem('role') === 'Admin';
                     const colSekolah = isAdmin ? `<td class="p-3 text-red-600 font-semibold text-sm">${p.sekolah}</td>` : '';
                     
+                    // --- TAMBAHAN BARU: Logika Tombol Lampiran ---
+                    let btnLampiran = '<span class="text-xs text-gray-400 italic">Tidak ada</span>';
+                    if (p.fileUrl) {
+                        // Jika URL ada, buat tombol tautan yang membuka tab baru (target="_blank")
+                        btnLampiran = `<a href="${p.fileUrl}" target="_blank" class="text-purple-600 hover:bg-purple-100 px-3 py-1.5 rounded-md transition inline-flex items-center text-sm font-medium border border-purple-200" title="Buka Dokumen">
+                            <i class="fas fa-external-link-alt mr-1.5"></i> Buka
+                        </a>`;
+                    }
+                    // ---------------------------------------------
+
                     const btnAksi = `
+                        <button onclick="cetakKartu(${p.idRow})" class="text-green-600 hover:bg-green-100 p-2 rounded transition mr-1" title="Cetak Kartu"><i class="fas fa-print"></i></button>
                         <button onclick="bukaModalEdit(${p.idRow})" class="text-blue-500 hover:bg-blue-100 p-2 rounded transition mr-1" title="Edit"><i class="fas fa-edit"></i></button>
                         <button onclick="hapusData(${p.idRow})" class="text-red-500 hover:bg-red-100 p-2 rounded transition" title="Hapus"><i class="fas fa-trash"></i></button>
                     `;
@@ -561,7 +619,11 @@
                                 <span class="bg-gray-200 text-gray-800 py-1 px-2 rounded-full text-xs font-bold">Kelas ${p.kelas}</span>
                             </td>
                             <td class="p-3 text-sm">${p.mapel}</td>
-                            <td class="p-3 text-center">${btnAksi}</td>
+                            
+                            <!-- === TAMBAHAN BARU: Memasukkan tombol ke dalam kolom === -->
+                            <td class="p-3 text-center align-middle">${btnLampiran}</td>
+                            
+                            <td class="p-3 text-center whitespace-nowrap">${btnAksi}</td>
                         </tr>
                     `;
                 });
@@ -573,6 +635,11 @@
             document.getElementById('formPeserta').reset();
             document.getElementById('inputIdRow').value = ''; 
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus mr-2 text-blue-600"></i> Tambah Peserta';
+
+            // Pastikan input file wajib diisi saat tambah data baru
+            document.getElementById('inputSuket').setAttribute('required', 'true');
+            // Kembalikan teks label seperti semula
+            document.getElementById('inputSuket').previousElementSibling.innerHTML = 'Upload Suket Aktif (Max 2MB)';
         }
 
         function bukaModalEdit(idRow) { 
@@ -586,6 +653,33 @@
                 document.getElementById('inputNama').value = dataEdit.nama;
                 document.getElementById('inputKelas').value = dataEdit.kelas;
                 document.getElementById('inputMapel').value = dataEdit.mapel;
+                
+                // --- MENGISI DATA TEMPAT LAHIR ---
+                document.getElementById('inputTempat').value = dataEdit.tempatLahir || '';
+
+                // --- MENGISI DATA TANGGAL LAHIR ---
+                // Format tanggal dari Google Sheets harus diubah ke YYYY-MM-DD
+                if (dataEdit.tanggalLahir) {
+                    let d = new Date(dataEdit.tanggalLahir);
+                    let month = '' + (d.getMonth() + 1);
+                    let day = '' + d.getDate();
+                    let year = d.getFullYear();
+
+                    if (month.length < 2) month = '0' + month;
+                    if (day.length < 2) day = '0' + day;
+
+                    document.getElementById('inputTglLahir').value = [year, month, day].join('-');
+                } else {
+                    document.getElementById('inputTglLahir').value = '';
+                }
+
+                // --- PENANGANAN FILE UPLOAD ---
+                // Browser melarang pengisian otomatis pada tipe file. Kita hapus status wajib isinya.
+                document.getElementById('inputSuket').value = ''; 
+                document.getElementById('inputSuket').removeAttribute('required');
+                // Tambahkan petunjuk visual untuk user
+                document.getElementById('inputSuket').previousElementSibling.innerHTML = 
+                    'Upload Suket Aktif (Max 2MB) <br><span class="text-xs text-red-500 font-normal italic">*Biarkan kosong jika tidak ingin mengubah file surat keterangan</span>';
             }
         }
 
@@ -598,6 +692,33 @@
             const btn = document.getElementById('btnSimpan');
             const idRow = document.getElementById('inputIdRow').value;
             
+            const fileInput = document.getElementById('inputSuket');
+            let filePayload = null;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                if (file.size > 2097152) {
+                    Swal.fire('Terlalu Besar!', 'Ukuran file maksimal 2 MB.', 'warning');
+                    return;
+                }
+
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengunggah...'; 
+                btn.disabled = true;
+
+                const reader = new FileReader();
+                filePayload = await new Promise((resolve) => {
+                    reader.onload = () => {
+                        const result = reader.result;
+                        const base64Data = result.split(',')[1];
+                        const mime = result.split(',')[0].match(/:(.*?);/)[1];
+                        const extension = file.name.split('.').pop();
+                        resolve({ base64: base64Data, mimeType: mime, ext: extension });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...'; 
             btn.disabled = true;
 
@@ -610,7 +731,10 @@
                     nisn: document.getElementById('inputNisn').value,
                     nama: document.getElementById('inputNama').value,
                     kelas: document.getElementById('inputKelas').value,
-                    mapel: document.getElementById('inputMapel').value
+                    mapel: document.getElementById('inputMapel').value,
+                    tempatLahir: document.getElementById('inputTempat').value,
+                    tanggalLahir: document.getElementById('inputTglLahir').value,
+                    fileData: filePayload 
                 }
             };
 
@@ -622,12 +746,15 @@
                     Swal.fire('Berhasil!', hasil.message, 'success');
                     tutupModal();
                     muatDataTabel();
-                    muatDataDashboard(); // Segarkan data flash card
+                    muatDataDashboard(); 
                 } else {
                     Swal.fire('Gagal!', hasil.message, 'warning');
                 }
-            } catch(err) { Swal.fire('Error', 'Gagal menyimpan', 'error'); }
-            finally { btn.innerHTML = 'Simpan Data'; btn.disabled = false; }
+            } catch(err) { 
+                Swal.fire('Error', 'Gagal menyimpan', 'error'); 
+            } finally { 
+                btn.innerHTML = 'Simpan Data'; btn.disabled = false; 
+            }
         }
 
         function hapusData(idRow) {
@@ -650,7 +777,7 @@
                         if(hasil.status === 'success') {
                             Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
                             muatDataTabel();
-                            muatDataDashboard(); // Segarkan data flash card
+                            muatDataDashboard(); 
                         } else {
                             Swal.fire('Gagal!', hasil.message, 'warning');
                         }
@@ -659,8 +786,77 @@
             });
         }
 
-        // PROTEKSI HALAMAN
-        // ==========================================
+        function cetakKartu(idRow) {
+            const data = globalDataPeserta.find(x => x.idRow === idRow);
+            if(!data) {
+                Swal.fire('Error', 'Data peserta tidak ditemukan', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            doc.setDrawColor(0);
+            doc.setLineWidth(0.5);
+            doc.rect(20, 20, 170, 95); 
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(16);
+            doc.setTextColor(153, 0, 0); 
+            doc.text("KARTU PESERTA", 105, 32, { align: "center" });
+            
+            doc.setFontSize(14);
+            doc.text("OSN SD KECAMATAN WARU TAHUN 2026", 105, 40, { align: "center" });
+
+            doc.setDrawColor(153, 0, 0);
+            doc.setLineWidth(1);
+            doc.line(25, 45, 185, 45);
+
+            doc.autoTable({
+                startY: 52,
+                margin: { left: 25 },
+                tableWidth: 160,
+                theme: 'plain',
+                styles: { 
+                    fontSize: 12, 
+                    cellPadding: 2, 
+                    textColor: 20,
+                    font: 'helvetica' 
+                },
+                columnStyles: {
+                    0: { cellWidth: 40, fontStyle: 'bold' },
+                    1: { cellWidth: 5, fontStyle: 'bold' },
+                    2: { cellWidth: 115 }
+                },
+                body: [
+                    ['Nama Lengkap', ':', data.nama],
+                    ['NISN', ':', data.nisn],
+                    ['Asal Sekolah', ':', data.sekolah],
+                    ['Kelas', ':', data.kelas],
+                    ['Mata Pelajaran', ':', data.mapel],
+                ],
+            });
+
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            
+            const finalY = doc.lastAutoTable.finalY + 15; 
+            
+            doc.text("Waru, .............................. 2026", 130, finalY);
+            doc.text("Panitia Pelaksana,", 130, finalY + 5);
+            doc.text("_________________________", 130, finalY + 25);
+
+            const fileName = `Kartu_Peserta_${data.nama.replace(/\s+/g, '_')}_${data.mapel}.pdf`;
+            doc.save(fileName);
+        }
+
+        function formatTanggalIndo(tglStr) {
+            if (!tglStr) return '-';
+            const date = new Date(tglStr);
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        }
+
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
