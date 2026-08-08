@@ -78,6 +78,10 @@
                     <i class="fas fa-file-alt w-5 text-center"></i>
                     <span>Petunjuk Teknis</span>
                 </button>
+                <button onclick="bukaHalaman('pageDownload')" class="w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageDownload">
+                    <i class="fas fa-cloud-download-alt w-5 text-center"></i>
+                    <span>Area Download</span>
+                </button>
                 <!-- [BARU] Menu Data Pembina -->
                 <button onclick="bukaHalaman('pagePembina')" class="w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pagePembina">
                     <i class="fas fa-user-tie w-5 text-center"></i>
@@ -191,9 +195,26 @@
 
                         <!-- Tombol Download Juknis PDF -->
                         <div class="border-t pt-5">
-                            <a href="https://drive.google.com/file/d/17VlGlxwSZsZ9CQsPTwu0488LlCZOYxua/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
+                            <a href="#" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
                                 <i class="fas fa-file-pdf mr-2 text-xl"></i> Unduh Juknis Lengkap (PDF)
                             </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN AREA DOWNLOAD -->
+                <div id="pageDownload" class="page-section fade-in hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+                            <i class="fas fa-cloud-download-alt mr-2 text-blue-600"></i>Area Download
+                        </h2>
+                        
+                        <!-- Tempat flashcard akan dimunculkan -->
+                        <div id="gridDownload" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Loading state awal -->
+                            <div class="col-span-full text-center py-6 text-gray-500">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat file...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -430,6 +451,8 @@
             updateMenuWarna(pageId);
             
             if(pageId === 'pagePembina') muatDataPembina();
+            if(pageId === 'pageDownload') muatDataDownload(); // [BARU] Panggil data download
+            
             if(window.innerWidth < 768) toggleSidebar();
         }
 
@@ -707,6 +730,7 @@
                             <td class="p-3 text-sm text-gray-700">${p.namaPembina || '-'}</td>
                             <td class="p-3 text-center">${btnLampiran}</td>
                             <td class="p-3 text-center whitespace-nowrap">
+                                <button onclick="cetakKartu(${p.idRow})" class="text-green-600 hover:bg-green-100 p-2 rounded mr-1" title="Cetak Kartu"><i class="fas fa-print"></i></button>
                                 <button onclick="bukaModalEditPeserta(${p.idRow})" class="text-blue-500 hover:bg-blue-100 p-2 rounded mr-1" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button onclick="hapusData(${p.idRow})" class="text-red-500 hover:bg-red-100 p-2 rounded" title="Hapus"><i class="fas fa-trash"></i></button>
                             </td>
@@ -1039,12 +1063,62 @@
             finally { btn.innerHTML = 'Simpan Pengaturan'; btn.disabled = false; }
         }
 
+
+        // ==========================================
+        // KHUSUS PENGELOLAAN AREA DOWNLOAD
+        // ==========================================
+        async function muatDataDownload() {
+            const grid = document.getElementById('gridDownload');
+            grid.innerHTML = '<div class="col-span-full text-center py-6 text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat file...</div>';
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getDownload' })
+                });
+                const response = await res.json();
+
+                if (response.status === 'success') {
+                    grid.innerHTML = ''; // Bersihkan loading
+                    const data = response.data;
+
+                    if (data.length === 0) {
+                        grid.innerHTML = '<div class="col-span-full text-center text-gray-500">Belum ada file yang dapat diunduh saat ini.</div>';
+                        return;
+                    }
+
+                    // Looping data untuk membuat flashcard
+                    data.forEach(file => {
+                        grid.innerHTML += `
+                            <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition p-5 flex flex-col justify-between">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                                        <i class="fas fa-file-alt text-2xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 line-clamp-2">${file.namaFile}</h4>
+                                    </div>
+                                </div>
+                                <a href="${file.urlFile}" target="_blank" class="w-full bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 font-semibold py-2 px-4 rounded text-center transition">
+                                    <i class="fas fa-download mr-1"></i> Unduh File
+                                </a>
+                            </div>
+                        `;
+                    });
+                }
+            } catch(err) {
+                grid.innerHTML = '<div class="col-span-full text-center text-red-500">Gagal memuat data download. Pastikan koneksi internet stabil.</div>';
+            }
+        }
+
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
             if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) e.preventDefault();
             if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) e.preventDefault();
         });
+
+        
     </script>
 </body>
 </html>
