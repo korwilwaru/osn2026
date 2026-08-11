@@ -19,6 +19,35 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .sidebar-transition { transition: transform 0.3s ease-in-out; }
+
+        /* ==========================================
+           PENGATURAN CSS KHUSUS CETAK KARTU (PRINT)
+           ========================================== */
+        @media print {
+            body * {
+                visibility: hidden; /* Sembunyikan seluruh aplikasi */
+            }
+            #areaCetakKartu, #areaCetakKartu * {
+                visibility: visible; /* Tampilkan HANYA area cetak kartu */
+            }
+            #areaCetakKartu {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 5mm; /* Jarak antar kartu */
+            }
+            @page {
+                size: A4; /* Paksa ukuran kertas A4 */
+                margin: 10mm; /* Margin kertas */
+            }
+            .kartu-page-break {
+                page-break-inside: avoid; /* Mencegah kartu terpotong di tengah halaman */
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans overflow-hidden">
@@ -96,6 +125,10 @@
                 <button id="menuPengaturan" onclick="bukaHalaman('pagePengaturan')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pagePengaturan">
                     <i class="fas fa-cogs w-5 text-center"></i>
                     <span>Set Periode</span>
+                </button>
+                <button id="menuCetakKartu" onclick="bukaHalaman('pageCetakKartu')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageCetakKartu">
+                    <i class="fas fa-id-badge w-5 text-center"></i>
+                    <span>Cetak Kartu Peserta</span>
                 </button>
                 <button id="menuLaporan" onclick="bukaHalaman('pageLaporan')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageLaporan">
                     <i class="fas fa-print w-5 text-center"></i>
@@ -345,6 +378,27 @@
                     </div>
                 </div>
 
+                <!-- ========================================== -->
+                <!-- HALAMAN CETAK KARTU (KHUSUS ADMIN)         -->
+                <!-- ========================================== -->
+                <div id="pageCetakKartu" class="page-section fade-in hidden">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+                            <i class="fas fa-id-badge mr-2 text-blue-600"></i>Cetak Kartu Peserta Massal
+                        </h2>
+                        <p class="text-gray-600 mb-4">Pastikan Anda telah mendaftarkan peserta. Sistem akan membuatkan kartu berukuran 85x105 mm sesuai dengan bidang studi masing-masing.</p>
+                        
+                        <button onclick="buatDanCetakKartu()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded shadow transition flex items-center mb-6">
+                            <i class="fas fa-print mr-2"></i> Proses & Cetak Semua Kartu
+                        </button>
+
+                        <div id="statusCetakKartu" class="text-sm text-gray-500"></div>
+                    </div>
+                </div>
+
+                <!-- AREA INI HANYA TERLIHAT SAAT DIPRINT -->
+                <div id="areaCetakKartu" class="hidden"></div>
+
             </main>
         </div>
         
@@ -534,6 +588,10 @@
                     if(document.getElementById('menuLaporan')) {
                         document.getElementById('menuLaporan').classList.remove('hidden');
                         document.getElementById('menuLaporan').classList.add('flex');
+                    }
+                    if(document.getElementById('menuCetakKartu')) {
+                        document.getElementById('menuCetakKartu').classList.remove('hidden');
+                        document.getElementById('menuCetakKartu').classList.add('flex');
                     }
                 }
 
@@ -771,6 +829,7 @@
                             <td class="p-3 text-sm text-gray-700">${p.namaPembina || '-'}</td>
                             <td class="p-3 text-center">${btnLampiran}</td>
                             <td class="p-3 text-center whitespace-nowrap">
+                                <button onclick="cetakKartu(${p.idRow})" class="text-green-600 hover:bg-green-100 p-2 rounded mr-1" title="Cetak Kartu"><i class="fas fa-print"></i></button>
                                 <button onclick="bukaModalEditPeserta(${p.idRow})" class="text-blue-500 hover:bg-blue-100 p-2 rounded mr-1" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button onclick="hapusData(${p.idRow})" class="text-red-500 hover:bg-red-100 p-2 rounded" title="Hapus"><i class="fas fa-trash"></i></button>
                             </td>
@@ -1389,6 +1448,158 @@
                 doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
                 
                 doc.save(`Laporan_Pembina_${tglCetak}.pdf`);
+            }
+        }
+
+        // ==========================================
+        // FUNGSI BANTUAN UNTUK MENGUBAH GAMBAR KE BASE64
+        // ==========================================
+        function getBase64ImageFromUrl(imageUrl) {
+            return new Promise((resolve) => {
+                let img = new Image();
+                img.crossOrigin = 'Anonymous'; // Mencegah error keamanan saat mengambil gambar dari luar
+                img.onload = () => {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    let ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/jpeg'));
+                };
+                img.onerror = () => {
+                    resolve(null); // Jika gambar gagal dimuat, abaikan agar aplikasi tidak macet
+                };
+                img.src = imageUrl;
+            });
+        }
+
+        // ==========================================
+        // KHUSUS FITUR CETAK KARTU MASSAL (JSPDF)
+        // ==========================================
+        async function buatDanCetakKartu() {
+            const status = document.getElementById('statusCetakKartu');
+            status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data peserta...';
+            
+            try {
+                // 1. Ambil data dari server
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getPeserta', npsn: sessionStorage.getItem('npsn'), role: sessionStorage.getItem('role') })
+                });
+                const response = await res.json();
+
+                if (response.status === 'success') {
+                    const data = response.data;
+                    
+                    if(data.length === 0) {
+                        status.innerHTML = '<span class="text-red-500">Tidak ada peserta untuk dicetak.</span>';
+                        return;
+                    }
+
+                    status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses gambar dan merakit PDF (Ini mungkin butuh waktu beberapa detik)...';
+
+                    // 2. Persiapan Kertas PDF
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4'); // Kertas A4 (210 x 297 mm)
+
+                    // Konfigurasi Ukuran & Jarak
+                    const cardW = 85;
+                    const cardH = 105;
+                    const marginX = 15; // Jarak kartu dari tepi kiri kertas
+                    const marginY = 20; // Jarak kartu dari tepi atas kertas
+                    const gapX = 10;    // Jarak antar kolom kartu
+                    const gapY = 10;    // Jarak antar baris kartu
+
+                    let kartuKe = 0; // Penghitung jumlah kartu
+
+                    // 3. Proses Penggambaran untuk Setiap Peserta
+                    for (let i = 0; i < data.length; i++) {
+                        let p = data[i];
+
+                        // Hitung posisi di dalam halaman A4
+                        let urutanDiHalaman = kartuKe % 4; // Menampung maks 4 kartu per halaman
+                        if (urutanDiHalaman === 0 && kartuKe > 0) {
+                            doc.addPage(); // Buka halaman baru setiap kelipatan ke-4
+                        }
+
+                        let kolom = urutanDiHalaman % 2; // Hasil 0 (kiri) atau 1 (kanan)
+                        let baris = Math.floor(urutanDiHalaman / 2); // Hasil 0 (atas) atau 1 (bawah)
+
+                        // Menemukan titik Kiri Atas (X,Y) dari kartu saat ini
+                        let cardX = marginX + (kolom * (cardW + gapX));
+                        let cardY = marginY + (baris * (cardH + gapY));
+
+                        // Gambar garis batas kartu luar (sebagai pembantu pemotongan kertas)
+                        doc.setDrawColor(200, 200, 200);
+                        doc.rect(cardX, cardY, cardW, cardH);
+
+                        // --- MENGGAMBAR LATAR BELAKANG MAPEL ---
+                        let bgUrl = '';
+                        if (p.mapel === 'Matematika') bgUrl = 'matematika.jpg';
+                        else if (p.mapel === 'IPA') bgUrl = 'ipa.jpg';
+                        else if (p.mapel === 'IPS') bgUrl = 'ips.jpg';
+
+                        let bgBase64 = await getBase64ImageFromUrl(bgUrl);
+                        if (bgBase64) {
+                            // Letakkan gambar latar berukuran sama persis dengan kartu
+                            doc.addImage(bgBase64, 'JPEG', cardX, cardY, cardW, cardH); 
+                        }
+
+                        // --- MENGATUR AREA KONTEN (Margin Kiri 15mm) ---
+                        let contentStartX = cardX + 15;
+                        let contentW = cardW - 15; // Sisa lebar 70mm
+                        let centerX = contentStartX + (contentW / 2); // Titik Rata Tengah untuk Teks & Foto
+
+                        // --- MENGGAMBAR FOTO (40x40mm, jarak atas 35mm) ---
+                        let fotoW = 40;
+                        let fotoH = 40;
+                        let fotoY = cardY + 35; // Margin top 35mm dari ujung atas kartu
+                        let fotoX = centerX - (fotoW / 2); // Digeser agar tepat di tengah area konten
+
+                        let fotoUrl = getThumbUrl(p.fotoUrl);
+                        let fotoBase64 = await getBase64ImageFromUrl(fotoUrl);
+
+                        if (fotoBase64) {
+                            // Ikon Foto berhasil dimuat
+                            doc.addImage(fotoBase64, 'JPEG', fotoX, fotoY, fotoW, fotoH);
+                        } else {
+                            // Kotak abu-abu cadangan jika foto peserta kosong/gagal muat
+                            doc.setFillColor(220, 220, 220);
+                            doc.rect(fotoX, fotoY, fotoW, fotoH, 'F');
+                        }
+                        // Berikan bingkai tipis pada foto
+                        doc.setDrawColor(0, 0, 0); 
+                        doc.rect(fotoX, fotoY, fotoW, fotoH);
+
+                        // --- MENGGAMBAR NAMA PESERTA ---
+                        // jsPDF menulis teks berpatokan pada garis bawah huruf (baseline), bukan ujung atas teks.
+                        // Tinggi foto 40mm, jarak 4mm, ditambah kira-kira 5mm untuk tinggi font 14pt (total +49mm dari ujung atas foto)
+                        let textNamaY = fotoY + 49; 
+                        
+                        doc.setFontSize(10);
+                        doc.setFont("helvetica", "bold");
+                        doc.setTextColor(0, 0, 0);
+                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); // Rata tengah di sumbu X
+
+                        // --- MENGGAMBAR NAMA SEKOLAH ---
+                        // Turunkan sedikit posisi garis bawah teks
+                        let textSekolahY = textNamaY + 6; 
+                        
+                        doc.setFontSize(9);
+                        doc.setFont("helvetica", "normal");
+                        doc.text(p.sekolah, centerX, textSekolahY, { align: 'center' });
+
+                        kartuKe++; // Pindah ke peserta selanjutnya
+                    }
+
+                    // 4. Selesai dan Unduh PDF
+                    doc.save('Kartu_Peserta_OSN_SD_Waru.pdf');
+                    status.innerHTML = '<span class="text-green-600"><i class="fas fa-check mr-2"></i> PDF berhasil diunduh!</span>';
+
+                }
+            } catch (err) {
+                console.error(err);
+                status.innerHTML = '<span class="text-red-500">Gagal membuat PDF. Periksa log konsol browser.</span>';
             }
         }
 
