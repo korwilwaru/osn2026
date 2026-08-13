@@ -103,15 +103,10 @@
                     <i class="fas fa-home w-5 text-center"></i>
                     <span>Dashboard</span>
                 </button>
-                <!-- <button onclick="bukaHalaman('pageJuknis')" class="w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageJuknis">
-                    <i class="fas fa-file-alt w-5 text-center"></i>
-                    <span>Petunjuk Teknis</span>
-                </button> -->
                 <button onclick="bukaHalaman('pageDownload')" class="w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageDownload">
                     <i class="fas fa-cloud-download-alt w-5 text-center"></i>
                     <span>Area Download</span>
                 </button>
-                <!-- [BARU] Menu Data Pembina -->
                 <button onclick="bukaHalaman('pagePembina')" class="text-yellow-200 w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pagePembina">
                     <i class="fas fa-user-tie w-5 text-center"></i>
                     <span>Data Pembina</span>
@@ -181,64 +176,6 @@
                     </div>
                 </div>
 
-                <!-- 2. HALAMAN JUKNIS -->
-                <div id="pageJuknis" class="page-section fade-in hidden">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Petunjuk Teknis & Aturan</h2>
-                        
-                        <!-- Bagian A: Syarat Peserta -->
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">
-                            <i class="fas fa-clipboard-list mr-2 text-blue-600"></i>A. Syarat Peserta
-                        </h3>
-                        <div class="space-y-4 text-gray-700 text-justify mb-8">
-                            <ol class="list-decimal list-outside space-y-3 ml-5">
-                                <li>Setiap sekolah wajib mengirimkan peserta pada 3 bidang studi lomba OSN, yaitu Matematika, Ilmu Pengetahuan Alam (IPA), dan Ilmu Pengetahuan Sosial (IPS).</li>
-                                <li>Peserta merupakan murid kelas 4 atau kelas 5 yang ditunjuk oleh sekolah, dengan ketentuan setiap bidang lomba diwakili oleh 1 (satu) orang peserta.</li>
-                                <li>Setiap peserta hanya diperbolehkan mengikuti 1 (satu) bidang lomba dan tidak diperkenankan mengikuti lebih dari satu bidang lomba.</li>
-                                <li>Syarat pendaftaran: Fotocopy Raport/Surat Keterangan Aktif dari Kepala Sekolah.</li>
-                            </ol>
-                        </div>
-
-                        <!-- Bagian B: Jadwal Kegiatan -->
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">
-                            <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>B. Jadwal Kegiatan
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                            <!-- Kartu Jadwal Pendaftaran (Otomatis dari Database) -->
-                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                                <h4 class="font-bold text-blue-800 mb-3 uppercase text-sm tracking-wider">Jadwal Pendaftaran</h4>
-                                <ul class="text-blue-900 space-y-2">
-                                    <li>
-                                        <i class="fas fa-play-circle w-5 text-blue-600"></i> 
-                                        <strong>Dibuka:</strong> <span id="infoJadwalMulai" class="font-semibold">Memuat data...</span>
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-stop-circle w-5 text-red-500"></i> 
-                                        <strong>Ditutup:</strong> <span id="infoJadwalTutup" class="font-semibold">Memuat data...</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            
-                            <!-- Kartu Jadwal Pelaksanaan -->
-                            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                <h4 class="font-bold text-green-800 mb-3 uppercase text-sm tracking-wider">Jadwal Pelaksanaan</h4>
-                                <ul class="text-green-900 space-y-2">
-                                    <li><i class="fas fa-clock w-5 text-green-600"></i> <strong>Hari, Tanggal:</strong> Rabu, 26 Agustus 2026</li>
-                                    <li><i class="fas fa-hourglass-half w-5 text-green-600"></i> <strong>Waktu:</strong> 07.00 WIB - Selesai</li>
-                                    <li><i class="fas fa-map-marker-alt w-5 text-red-600"></i> <strong>Tempat:</strong> SD Negeri Waru Barat 4</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Tombol Download Juknis PDF -->
-                        <div class="border-t pt-5">
-                            <a href="#" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
-                                <i class="fas fa-file-pdf mr-2 text-xl"></i> Unduh Juknis Lengkap (PDF)
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- HALAMAN AREA DOWNLOAD -->
                 <div id="pageDownload" class="page-section fade-in hidden">
                     <div class="bg-white rounded-lg shadow-md p-6">
@@ -246,9 +183,7 @@
                             <i class="fas fa-cloud-download-alt mr-2 text-blue-600"></i>Area Download
                         </h2>
                         
-                        <!-- Tempat flashcard akan dimunculkan -->
                         <div id="gridDownload" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Loading state awal -->
                             <div class="col-span-full text-center py-6 text-gray-500">
                                 <i class="fas fa-spinner fa-spin mr-2"></i>Memuat file...
                             </div>
@@ -256,7 +191,7 @@
                     </div>
                 </div>
 
-                <!-- 3. [BARU] HALAMAN DATA PEMBINA -->
+                <!-- 3. HALAMAN DATA PEMBINA -->
                 <div id="pagePembina" class="page-section fade-in hidden">
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="p-5 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 space-y-3 sm:space-y-0">
@@ -271,7 +206,6 @@
                                 <thead class="bg-gray-100 border-b">
                                     <tr>
                                         <th class="p-3 text-sm font-semibold text-gray-600">No</th>
-                                        <!-- [DIPERBARUI] Mengubah NPSN menjadi Nama Sekolah -->
                                         <th class="p-3 text-sm font-semibold text-gray-600 hidden" id="kolomSekolahPembina">Nama Sekolah</th>
                                         <th class="p-3 text-sm font-semibold text-gray-600 text-center">Foto</th>
                                         <th class="p-3 text-sm font-semibold text-gray-600">Nama Pembina</th>
@@ -345,14 +279,13 @@
                     </div>
                 </div>
 
-                <!-- 6. [BARU] HALAMAN LAPORAN (KHUSUS ADMIN) -->
+                <!-- 6. HALAMAN LAPORAN (KHUSUS ADMIN) -->
                 <div id="pageLaporan" class="page-section fade-in hidden">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
                             <i class="fas fa-print mr-2 text-blue-600"></i>Cetak Laporan
                         </h2>
                         
-                        <!-- Panel Kontrol (Dropdown & Tombol) -->
                         <div class="flex flex-col sm:flex-row gap-3 mb-6 bg-gray-50 p-4 rounded-md border border-gray-200">
                             <div class="flex-grow">
                                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Pilih Jenis Laporan</label>
@@ -371,7 +304,6 @@
                             </div>
                         </div>
 
-                        <!-- Area Tampilan Pratinjau Tabel -->
                         <div id="areaPratinjauLaporan" class="min-h-[200px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center p-4">
                             <p class="text-gray-400 text-center">Pilih jenis laporan lalu klik <strong>Tampilkan</strong> untuk melihat pratinjau data.</p>
                         </div>
@@ -461,7 +393,6 @@
                     </select>
                 </div>
 
-                <!-- [BARU] Input Foto Siswa -->
                 <div class="mb-4 border border-dashed border-gray-400 p-3 rounded bg-gray-50">
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Foto Siswa (Pas Foto 3x4, Max 2MB) <span class="text-red-500">*</span></label>
                     <input type="file" id="inputFotoSiswa" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required>
@@ -481,7 +412,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- [BARU] MODAL FORM PEMBINA                  -->
+    <!-- MODAL FORM PEMBINA                         -->
     <!-- ========================================== -->
     <div id="modalPembina" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-lg shadow-2xl w-full max-w-md fade-in max-h-[90vh] overflow-y-auto">
@@ -526,7 +457,9 @@
     <!-- LOGIKA JAVASCRIPT                          -->
     <!-- ========================================== -->
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTvIr5M2NfmTjSRNfM_V9cyBDyCfvPEGqAOxb0ann9nKnDP5AHR1TPBZ7mw2ezVm69/exec'; 
+        // PERUBAHAN 1: Ganti SCRIPT_URL mengarah ke file PHP backend
+        const SCRIPT_URL = 'https://lemperdua.web.id/osn2026/api.php'; 
+        
         let globalDataPeserta = [];
         let globalDataPembina = [];
 
@@ -542,7 +475,7 @@
             updateMenuWarna(pageId);
             
             if(pageId === 'pagePembina') muatDataPembina();
-            if(pageId === 'pageDownload') muatDataDownload(); // [BARU] Panggil data download
+            if(pageId === 'pageDownload') muatDataDownload();
             
             if(window.innerWidth < 768) toggleSidebar();
         }
@@ -579,7 +512,6 @@
                 
                 if(sessionStorage.getItem('role') === 'Admin') {
                     document.getElementById('kolomAsalSekolah').classList.remove('hidden');
-                    // [DIPERBARUI] Menyesuaikan ID untuk membuka kolom Nama Sekolah di tabel pembina
                     if(document.getElementById('kolomSekolahPembina')) {
                         document.getElementById('kolomSekolahPembina').classList.remove('hidden');
                     }
@@ -604,11 +536,9 @@
             }
         }
 
-        // --- FUNGSI TAMPILAN THUMBNAIL FOTO ---
+        // PERUBAHAN 2: Fungsi disederhanakan karena URL yang dikembalikan PHP sudah berbentuk path valid
         function getThumbUrl(url) {
-            if(!url) return 'https://via.placeholder.com/150?text=No+Foto';
-            const match = url.match(/[-\w]{25,}/);
-            if(match) return `https://lh3.googleusercontent.com/d/${match[0]}`;
+            if(!url || url.includes('Error')) return 'https://via.placeholder.com/150?text=No+Foto';
             return url;
         }
 
@@ -640,7 +570,6 @@
                 const isAdmin = sessionStorage.getItem('role') === 'Admin';
 
                 globalDataPembina.forEach((p, index) => {
-                    // [DIPERBARUI] Memanggil p.namaSekolah, bukan p.npsn
                     const colSekolah = isAdmin ? `<td class="p-3 text-red-600 font-semibold text-sm">${p.namaSekolah}</td>` : '';
 
                     tbody.innerHTML += `
@@ -673,7 +602,12 @@
             try {
                 const res = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'getPembina', npsn: sessionStorage.getItem('npsn') })
+                    // [PERUBAHAN DI SINI]: Tambahkan role: sessionStorage.getItem('role')
+                    body: JSON.stringify({ 
+                        action: 'getPembina', 
+                        npsn: sessionStorage.getItem('npsn'),
+                        role: sessionStorage.getItem('role')
+                    })
                 });
                 const response = await res.json();
                 globalDataPembina = response.data;
@@ -687,7 +621,9 @@
                 globalDataPembina.forEach(p => {
                     select.innerHTML += `<option value="${p.nama}">${p.nama}</option>`;
                 });
-            } catch(e) { select.innerHTML = '<option value="">Gagal memuat pembina</option>'; }
+            } catch(e) { 
+                select.innerHTML = '<option value="">Gagal memuat pembina</option>'; 
+            }
         }
 
         function bukaModalPembina() {
@@ -746,7 +682,7 @@
                 data: {
                     idRow: idRow ? parseInt(idRow) : null,
                     npsn: sessionStorage.getItem('npsn'),
-                    namaSekolah: sessionStorage.getItem('namaSekolah'), // <-- TAMBAHKAN BARIS INI
+                    namaSekolah: sessionStorage.getItem('namaSekolah'),
                     nama: document.getElementById('inputNamaPembina').value,
                     nip: document.getElementById('inputNipPembina').value,
                     nuptk: document.getElementById('inputNuptkPembina').value,
@@ -829,6 +765,7 @@
                             <td class="p-3 text-sm text-gray-700">${p.namaPembina || '-'}</td>
                             <td class="p-3 text-center">${btnLampiran}</td>
                             <td class="p-3 text-center whitespace-nowrap">
+                                <button onclick="cetakKartu(${p.idRow})" class="text-green-600 hover:bg-green-100 p-2 rounded mr-1" title="Cetak Kartu"><i class="fas fa-print"></i></button>
                                 <button onclick="bukaModalEditPeserta(${p.idRow})" class="text-blue-500 hover:bg-blue-100 p-2 rounded mr-1" title="Edit"><i class="fas fa-edit"></i></button>
                                 <button onclick="hapusData(${p.idRow})" class="text-red-500 hover:bg-red-100 p-2 rounded" title="Hapus"><i class="fas fa-trash"></i></button>
                             </td>
@@ -890,14 +827,12 @@
             let filePayload = null;
             let fotoPayload = null;
 
-            // Memproses File Suket
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 if (file.size > 2097152) return Swal.fire('Terlalu Besar!', 'Ukuran file Suket maksimal 2 MB.', 'warning');
                 filePayload = await konversiBase64(file);
             }
 
-            // Memproses Foto Siswa
             if (fotoInput.files.length > 0) {
                 const foto = fotoInput.files[0];
                 if (foto.size > 2097152) return Swal.fire('Terlalu Besar!', 'Ukuran Foto Siswa maksimal 2 MB.', 'warning');
@@ -1013,7 +948,6 @@
             } catch(err) { grid.innerHTML = '<div class="col-span-full text-center text-red-500">Gagal memuat data status.</div>'; }
         }
 
-        // Fungsi Pembantu: Mengubah string format "2026-08-01" menjadi format "1 Agustus 2026"
         function formatTanggalIndo(stringTanggal) {
             if (!stringTanggal) return 'Belum diatur';
             const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -1021,7 +955,6 @@
             return tanggal.toLocaleDateString('id-ID', opsi);
         }
 
-        // Fungsi Utama: Mengambil periode pendaftaran dari database
         async function cekJadwalDinamis() {
             const info = document.getElementById('infoPendaftaran');
             const btn = document.getElementById('btnTambahData');
@@ -1034,19 +967,11 @@
                 const data = await res.json();
                 
                 if (data.status === 'success') {
-                    // 1. Set nilai pada Form Pengaturan Jadwal (jika elemennya ada)
                     if (document.getElementById('inputTglMulai')) {
                         document.getElementById('inputTglMulai').value = data.mulai;
                         document.getElementById('inputTglSelesai').value = data.selesai;
                     }
 
-                    // 2. [OTOMATISASI JUKNIS] Tampilkan tanggal di Halaman Juknis
-                    const elemMulai = document.getElementById('infoJadwalMulai');
-                    const elemTutup = document.getElementById('infoJadwalTutup');
-                    if (elemMulai) elemMulai.innerText = formatTanggalIndo(data.mulai);
-                    if (elemTutup) elemTutup.innerText = formatTanggalIndo(data.selesai);
-
-                    // 3. Logika Peringatan Status Pendaftaran (Belum Buka / Sedang Buka / Ditutup)
                     const hariIni = new Date();
                     const mulai = new Date(data.mulai + "T00:00:00");
                     const akhir = new Date(data.selesai + "T23:59:59");
@@ -1161,7 +1086,6 @@
             finally { btn.innerHTML = 'Simpan Pengaturan'; btn.disabled = false; }
         }
 
-
         // ==========================================
         // KHUSUS PENGELOLAAN AREA DOWNLOAD
         // ==========================================
@@ -1177,7 +1101,7 @@
                 const response = await res.json();
 
                 if (response.status === 'success') {
-                    grid.innerHTML = ''; // Bersihkan tulisan loading
+                    grid.innerHTML = ''; 
                     const data = response.data;
 
                     if (data.length === 0) {
@@ -1185,31 +1109,20 @@
                         return;
                     }
 
-                    // Looping data untuk membuat flashcard mirip gambar
                     data.forEach(file => {
                         grid.innerHTML += `
                             <div class="bg-white border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col rounded-md overflow-hidden">
-                                
-                                <!-- Bagian Atas: Latar abu-abu, Ikon, dan Judul -->
                                 <div class="bg-gray-100/80 p-8 flex flex-col items-center justify-center text-center flex-grow relative">
-                                    <!-- Jika ingin efek tekstur seperti gambar, kita bisa manfaatkan class ini -->
                                     <div class="absolute inset-0 opacity-40 bg-[url('pattern.jpeg')] bg-cover mix-blend-multiply"></div>
-                                    
-                                    <!-- Ikon PDF besar di tengah -->
                                     <i class="fas fa-file-pdf text-red-500 text-7xl mb-4 relative z-10 drop-shadow-md"></i>
-                                    
-                                    <!-- Teks Judul -->
                                     <p class="text-gray-500 text-sm font-medium relative z-10">Dokumen File</p>
                                     <h4 class="font-bold text-gray-800 text-lg leading-snug relative z-10 mt-1">${file.namaFile}</h4>
                                 </div>
-
-                                <!-- Bagian Bawah: Latar putih dan Tombol Unduh Kiri -->
                                 <div class="bg-white p-4 border-t border-gray-200 flex justify-start">
                                     <a href="${file.urlFile}" target="_blank" class="bg-[#38bdf8] hover:bg-blue-500 text-white font-semibold py-2 px-5 rounded shadow-sm transition inline-flex items-center text-sm">
                                         <i class="fas fa-download mr-2"></i> Unduh
                                     </a>
                                 </div>
-                                
                             </div>
                         `;
                     });
@@ -1222,7 +1135,7 @@
         // ==========================================
         // KHUSUS PENGELOLAAN LAPORAN (ADMIN)
         // ==========================================
-        let dataLaporanAktif = null; // Menyimpan data sementara agar PDF tidak perlu download ulang
+        let dataLaporanAktif = null; 
         let jenisLaporanAktif = "";
 
         async function tampilkanLaporan() {
@@ -1230,13 +1143,11 @@
             const area = document.getElementById('areaPratinjauLaporan');
             const btnPdf = document.getElementById('btnDownloadLaporan');
             
-            // Atur tampilan loading
             area.innerHTML = '<div class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin text-3xl mb-3"></i><p>Mengambil data dari server...</p></div>';
             btnPdf.disabled = true;
             btnPdf.classList.add('opacity-50', 'cursor-not-allowed');
 
             try {
-                // Tentukan fungsi backend mana yang dipanggil
                 let actionCode = pilihan === 'peserta' ? 'getPeserta' : 'getPembina';
                 
                 const res = await fetch(SCRIPT_URL, {
@@ -1252,24 +1163,16 @@
                 if (response.status === 'success') {
                     let dataMentah = response.data;
                     
-                    // ==========================================
-                    // [BARU] LOGIKA PENGURUTAN DATA (SORTING)
-                    // ==========================================
                     if (pilihan === 'peserta') {
-                        // Urutkan berdasarkan timestamp (waktu) dari yang paling awal (lama) ke terbaru
                         dataMentah.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                     } else if (pilihan === 'pembina') {
-                        // Urutkan berdasarkan namaSekolah secara alfabetis (A-Z)
                         dataMentah.sort((a, b) => {
-                            // Memastikan namaSekolah tidak kosong untuk menghindari error
                             let sekolahA = a.namaSekolah ? a.namaSekolah.toUpperCase() : "";
                             let sekolahB = b.namaSekolah ? b.namaSekolah.toUpperCase() : "";
                             return sekolahA.localeCompare(sekolahB);
                         });
                     }
-                    // ==========================================
 
-                    // Simpan data yang sudah diurutkan ke variabel utama
                     dataLaporanAktif = dataMentah;
                     jenisLaporanAktif = pilihan;
                     
@@ -1278,7 +1181,6 @@
                         return;
                     }
 
-                    // 1. Jika Laporan Peserta (Dikelompokkan per Mapel)
                     if (pilihan === 'peserta') {
                         const mapels = ['Matematika', 'IPA', 'IPS'];
                         let htmlOutput = '';
@@ -1320,10 +1222,9 @@
                             }
                         });
                         
-                        area.className = "p-0 rounded-lg"; // Hilangkan dashed border
+                        area.className = "p-0 rounded-lg"; 
                         area.innerHTML = htmlOutput;
                     } 
-                    // 2. Jika Laporan Pembina
                     else if (pilihan === 'pembina') {
                         let htmlOutput = `<h4 class="font-bold text-lg text-green-800 mt-2 mb-4 border-b-2 border-green-200 pb-1">Daftar Seluruh Pembina <span class="text-sm font-normal text-gray-500">(${dataLaporanAktif.length} Orang)</span></h4>`;
                         
@@ -1356,7 +1257,6 @@
                         area.innerHTML = htmlOutput;
                     }
 
-                    // Aktifkan tombol Download
                     btnPdf.disabled = false;
                     btnPdf.classList.remove('opacity-50', 'cursor-not-allowed');
 
@@ -1372,7 +1272,6 @@
             if (!dataLaporanAktif || dataLaporanAktif.length === 0) return;
 
             const { jsPDF } = window.jspdf;
-            // Gunakan orientasi lanskap ('l') agar tabel lebih lega
             const doc = new jsPDF('l', 'mm', 'a4'); 
             const tglCetak = formatTanggalIndo(new Date().toISOString().split('T')[0]);
 
@@ -1380,40 +1279,34 @@
                 const mapels = ['Matematika', 'IPA', 'IPS'];
                 
                 mapels.forEach((mapel, index) => {
-                    // Tambah halaman baru jika bukan halaman pertama
                     if (index > 0) doc.addPage();
                     
-                    // Filter data per mapel
                     let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
                     
-                    // Kop Surat / Judul
                     doc.setFontSize(16);
                     doc.setFont("helvetica", "bold");
                     doc.text("REKAPITULASI PESERTA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
                     
                     doc.setFontSize(12);
-                    doc.setTextColor(220, 38, 38); // Warna merah
+                    doc.setTextColor(220, 38, 38); 
                     doc.text(`BIDANG STUDI: ${mapel.toUpperCase()}`, 148, 28, { align: "center" });
-                    doc.setTextColor(0, 0, 0); // Kembalikan ke hitam
+                    doc.setTextColor(0, 0, 0); 
                     
-                    // Siapkan baris data tabel
                     let bodyData = [];
                     pesertaMapel.forEach((p, i) => {
                         bodyData.push([i + 1, p.sekolah, p.nama, p.nisn, p.kelas, p.namaPembina]);
                     });
 
-                    // Gambar Tabel
                     doc.autoTable({
                         startY: 35,
                         head: [['No', 'Asal Sekolah', 'Nama Siswa', 'NISN', 'Kelas', 'Pembina Pendamping']],
                         body: bodyData,
                         theme: 'grid',
                         styles: { fontSize: 10, font: 'helvetica' },
-                        headStyles: { fillColor: [185, 28, 28] }, // Warna merah gelap
+                        headStyles: { fillColor: [185, 28, 28] }, 
                         margin: { top: 35, bottom: 20 }
                     });
                     
-                    // Keterangan Tgl Cetak di bawah
                     doc.setFontSize(9);
                     doc.setFont("helvetica", "italic");
                     doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
@@ -1422,7 +1315,6 @@
                 doc.save(`Laporan_Peserta_PerMapel_${tglCetak}.pdf`);
             } 
             else if (jenisLaporanAktif === 'pembina') {
-                // Kop Surat / Judul
                 doc.setFontSize(16);
                 doc.setFont("helvetica", "bold");
                 doc.text("REKAPITULASI PEMBINA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
@@ -1438,7 +1330,7 @@
                     body: bodyData,
                     theme: 'grid',
                     styles: { fontSize: 10, font: 'helvetica' },
-                    headStyles: { fillColor: [21, 128, 61] }, // Warna hijau gelap
+                    headStyles: { fillColor: [21, 128, 61] }, 
                     margin: { top: 30, bottom: 20 }
                 });
                 
@@ -1456,7 +1348,7 @@
         function getBase64ImageFromUrl(imageUrl) {
             return new Promise((resolve) => {
                 let img = new Image();
-                img.crossOrigin = 'Anonymous'; // Mencegah error keamanan saat mengambil gambar dari luar
+                img.crossOrigin = 'Anonymous'; 
                 img.onload = () => {
                     let canvas = document.createElement('canvas');
                     canvas.width = img.width;
@@ -1466,7 +1358,7 @@
                     resolve(canvas.toDataURL('image/jpeg'));
                 };
                 img.onerror = () => {
-                    resolve(null); // Jika gambar gagal dimuat, abaikan agar aplikasi tidak macet
+                    resolve(null); 
                 };
                 img.src = imageUrl;
             });
@@ -1480,7 +1372,6 @@
             status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data peserta...';
             
             try {
-                // 1. Ambil data dari server
                 const res = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'getPeserta', npsn: sessionStorage.getItem('npsn'), role: sessionStorage.getItem('role') })
@@ -1497,42 +1388,35 @@
 
                     status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses gambar dan merakit PDF (Ini mungkin butuh waktu beberapa detik)...';
 
-                    // 2. Persiapan Kertas PDF
                     const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF('p', 'mm', 'a4'); // Kertas A4 (210 x 297 mm)
+                    const doc = new jsPDF('p', 'mm', 'a4'); 
 
-                    // Konfigurasi Ukuran & Jarak
                     const cardW = 85;
                     const cardH = 105;
-                    const marginX = 15; // Jarak kartu dari tepi kiri kertas
-                    const marginY = 20; // Jarak kartu dari tepi atas kertas
-                    const gapX = 10;    // Jarak antar kolom kartu
-                    const gapY = 10;    // Jarak antar baris kartu
+                    const marginX = 15; 
+                    const marginY = 20; 
+                    const gapX = 10;    
+                    const gapY = 10;    
 
-                    let kartuKe = 0; // Penghitung jumlah kartu
+                    let kartuKe = 0; 
 
-                    // 3. Proses Penggambaran untuk Setiap Peserta
                     for (let i = 0; i < data.length; i++) {
                         let p = data[i];
 
-                        // Hitung posisi di dalam halaman A4
-                        let urutanDiHalaman = kartuKe % 4; // Menampung maks 4 kartu per halaman
+                        let urutanDiHalaman = kartuKe % 4; 
                         if (urutanDiHalaman === 0 && kartuKe > 0) {
-                            doc.addPage(); // Buka halaman baru setiap kelipatan ke-4
+                            doc.addPage(); 
                         }
 
-                        let kolom = urutanDiHalaman % 2; // Hasil 0 (kiri) atau 1 (kanan)
-                        let baris = Math.floor(urutanDiHalaman / 2); // Hasil 0 (atas) atau 1 (bawah)
+                        let kolom = urutanDiHalaman % 2; 
+                        let baris = Math.floor(urutanDiHalaman / 2); 
 
-                        // Menemukan titik Kiri Atas (X,Y) dari kartu saat ini
                         let cardX = marginX + (kolom * (cardW + gapX));
                         let cardY = marginY + (baris * (cardH + gapY));
 
-                        // Gambar garis batas kartu luar (sebagai pembantu pemotongan kertas)
                         doc.setDrawColor(200, 200, 200);
                         doc.rect(cardX, cardY, cardW, cardH);
 
-                        // --- MENGGAMBAR LATAR BELAKANG MAPEL ---
                         let bgUrl = '';
                         if (p.mapel === 'Matematika') bgUrl = 'matematika.jpg';
                         else if (p.mapel === 'IPA') bgUrl = 'ipa.jpg';
@@ -1540,58 +1424,47 @@
 
                         let bgBase64 = await getBase64ImageFromUrl(bgUrl);
                         if (bgBase64) {
-                            // Letakkan gambar latar berukuran sama persis dengan kartu
                             doc.addImage(bgBase64, 'JPEG', cardX, cardY, cardW, cardH); 
                         }
 
-                        // --- MENGATUR AREA KONTEN (Margin Kiri 15mm) ---
                         let contentStartX = cardX + 15;
-                        let contentW = cardW - 15; // Sisa lebar 70mm
-                        let centerX = contentStartX + (contentW / 2); // Titik Rata Tengah untuk Teks & Foto
+                        let contentW = cardW - 15; 
+                        let centerX = contentStartX + (contentW / 2); 
 
-                        // --- MENGGAMBAR FOTO (40x40mm, jarak atas 35mm) ---
                         let fotoW = 40;
                         let fotoH = 40;
-                        let fotoY = cardY + 35; // Margin top 35mm dari ujung atas kartu
-                        let fotoX = centerX - (fotoW / 2); // Digeser agar tepat di tengah area konten
+                        let fotoY = cardY + 35; 
+                        let fotoX = centerX - (fotoW / 2); 
 
                         let fotoUrl = getThumbUrl(p.fotoUrl);
                         let fotoBase64 = await getBase64ImageFromUrl(fotoUrl);
 
                         if (fotoBase64) {
-                            // Ikon Foto berhasil dimuat
                             doc.addImage(fotoBase64, 'JPEG', fotoX, fotoY, fotoW, fotoH);
                         } else {
-                            // Kotak abu-abu cadangan jika foto peserta kosong/gagal muat
                             doc.setFillColor(220, 220, 220);
                             doc.rect(fotoX, fotoY, fotoW, fotoH, 'F');
                         }
-                        // Berikan bingkai tipis pada foto
+                        
                         doc.setDrawColor(0, 0, 0); 
                         doc.rect(fotoX, fotoY, fotoW, fotoH);
 
-                        // --- MENGGAMBAR NAMA PESERTA ---
-                        // jsPDF menulis teks berpatokan pada garis bawah huruf (baseline), bukan ujung atas teks.
-                        // Tinggi foto 40mm, jarak 4mm, ditambah kira-kira 5mm untuk tinggi font 14pt (total +49mm dari ujung atas foto)
                         let textNamaY = fotoY + 49; 
                         
                         doc.setFontSize(10);
                         doc.setFont("helvetica", "bold");
                         doc.setTextColor(0, 0, 0);
-                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); // Rata tengah di sumbu X
+                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); 
 
-                        // --- MENGGAMBAR NAMA SEKOLAH ---
-                        // Turunkan sedikit posisi garis bawah teks
                         let textSekolahY = textNamaY + 6; 
                         
                         doc.setFontSize(9);
                         doc.setFont("helvetica", "normal");
                         doc.text(p.sekolah, centerX, textSekolahY, { align: 'center' });
 
-                        kartuKe++; // Pindah ke peserta selanjutnya
+                        kartuKe++; 
                     }
 
-                    // 4. Selesai dan Unduh PDF
                     doc.save('Kartu_Peserta_OSN_SD_Waru.pdf');
                     status.innerHTML = '<span class="text-green-600"><i class="fas fa-check mr-2"></i> PDF berhasil diunduh!</span>';
 
@@ -1608,8 +1481,6 @@
             if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) e.preventDefault();
             if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) e.preventDefault();
         });
-
-        
     </script>
 </body>
 </html>
