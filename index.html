@@ -1193,6 +1193,7 @@
             }
         }
 
+        // PENAMBAHAN CACHE-BUSTER UNTUK MENCEGAH MASALAH CORS GAMBAR 
         function getBase64ImageFromUrl(imageUrl) {
             return new Promise((resolve) => {
                 let img = new Image();
@@ -1206,7 +1207,10 @@
                     resolve(canvas.toDataURL('image/jpeg'));
                 };
                 img.onerror = () => resolve(null); 
-                img.src = imageUrl;
+                
+                // Cache buster ditambahkan agar browser selalu meminta header CORS terbaru dari server
+                let cacheBuster = imageUrl.includes('?') ? '&t=' : '?t=';
+                img.src = imageUrl + cacheBuster + new Date().getTime();
             });
         }
 
@@ -1259,9 +1263,11 @@
                         doc.rect(cardX, cardY, cardW, cardH);
 
                         let bgUrl = '';
-                        if (p.mapel === 'Matematika') bgUrl = 'matematika.jpg';
-                        else if (p.mapel === 'IPA') bgUrl = 'ipa.jpg';
-                        else if (p.mapel === 'IPS') bgUrl = 'ips.jpg';
+                        
+                        // PENAMBAHAN BASE_URL AGAR BACKGROUND MERUJUK KE HOSTING LEMPERDUA
+                        if (p.mapel === 'Matematika') bgUrl = BASE_URL + 'matematika.jpg';
+                        else if (p.mapel === 'IPA') bgUrl = BASE_URL + 'ipa.jpg';
+                        else if (p.mapel === 'IPS') bgUrl = BASE_URL + 'ips.jpg';
 
                         let bgBase64 = await getBase64ImageFromUrl(bgUrl);
                         if (bgBase64) {
