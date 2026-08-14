@@ -1537,7 +1537,7 @@
     else if (jenisLaporanAktif === 'daftar_hadir') {
         const doc = new jsPDF('p', 'mm', 'a4'); // Portrait untuk Daftar Hadir
         const mapels = ['Matematika', 'IPA', 'IPS'];
-        const prefixMap = { 'Matematika': 'MTK', 'IPA': 'IPA', 'IPS': 'IPS' };
+        const prefixMap = { 'Matematika': '001', 'IPA': '002', 'IPS': '003' };
         
         // Ambil logo lokal dari server lemperdua.web.id
         let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png');
@@ -1584,7 +1584,7 @@
             pesertaMapel.forEach((p, i) => { 
                 // Format: MTK-26-001
                 let noUrutPad = String(i + 1).padStart(3, '0');
-                let noPeserta = `${prefixMap[mapel]}-26-${noUrutPad}`;
+                let noPeserta = `${prefixMap[mapel]}-26-00${noUrutPad}`;
                 
                 // Format TTD Zig-zag (Ganjil di Kiri, Genap menjorok ke Kanan)
                 let ttd = (i % 2 === 0) ? `${i + 1}. ` : `              ${i + 1}. `;
