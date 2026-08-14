@@ -1538,8 +1538,8 @@
         const mapels = ['Matematika', 'IPA', 'IPS'];
         const prefixMap = { 'Matematika': 'MTK', 'IPA': 'IPA', 'IPS': 'IPS' };
         
-        // Ambil logo dari Wikimedia (Sumber universal dan aman dari CORS)
-        let logoBase64 = await getBase64ImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/8/84/Lambang_Daerah_Kab._Pamekasan%2C_Jawa_Timur.png');
+        // Ambil logo lokal dari server lemperdua.web.id
+        let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png');
 
         mapels.forEach((mapel, index) => {
             if (index > 0) doc.addPage();
