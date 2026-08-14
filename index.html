@@ -1148,78 +1148,6 @@
             }
         }
 
-        function downloadPDFLaporan() {
-            if (!dataLaporanAktif || dataLaporanAktif.length === 0) return;
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4'); 
-            const tglCetak = formatTanggalIndo(new Date().toISOString().split('T')[0]);
-
-            if (jenisLaporanAktif === 'peserta') {
-                const mapels = ['Matematika', 'IPA', 'IPS'];
-                
-                mapels.forEach((mapel, index) => {
-                    if (index > 0) doc.addPage();
-                    let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
-                    
-                    doc.setFontSize(16);
-                    doc.setFont("helvetica", "bold");
-                    doc.text("REKAPITULASI PESERTA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
-                    
-                    doc.setFontSize(12);
-                    doc.setTextColor(220, 38, 38); 
-                    doc.text(`BIDANG STUDI: ${mapel.toUpperCase()}`, 148, 28, { align: "center" });
-                    doc.setTextColor(0, 0, 0); 
-                    
-                    let bodyData = [];
-                    pesertaMapel.forEach((p, i) => {
-                        bodyData.push([i + 1, p.sekolah, p.nama, p.nisn, p.kelas, p.namaPembina]);
-                    });
-
-                    doc.autoTable({
-                        startY: 35,
-                        head: [['No', 'Asal Sekolah', 'Nama Siswa', 'NISN', 'Kelas', 'Pembina Pendamping']],
-                        body: bodyData,
-                        theme: 'grid',
-                        styles: { fontSize: 10, font: 'helvetica' },
-                        headStyles: { fillColor: [185, 28, 28] }, 
-                        margin: { top: 35, bottom: 20 }
-                    });
-                    
-                    doc.setFontSize(9);
-                    doc.setFont("helvetica", "italic");
-                    doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
-                });
-                
-                doc.save(`Laporan_Peserta_PerMapel_${tglCetak}.pdf`);
-            } 
-            else if (jenisLaporanAktif === 'pembina') {
-                doc.setFontSize(16);
-                doc.setFont("helvetica", "bold");
-                doc.text("REKAPITULASI PEMBINA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
-                
-                let bodyData = [];
-                dataLaporanAktif.forEach((p, i) => {
-                    bodyData.push([i + 1, p.namaSekolah, p.nama, p.nip, p.nuptk, p.wa]);
-                });
-
-                doc.autoTable({
-                    startY: 30,
-                    head: [['No', 'Asal Sekolah', 'Nama Pembina', 'NIP', 'NUPTK', 'No WhatsApp']],
-                    body: bodyData,
-                    theme: 'grid',
-                    styles: { fontSize: 10, font: 'helvetica' },
-                    headStyles: { fillColor: [21, 128, 61] }, 
-                    margin: { top: 30, bottom: 20 }
-                });
-                
-                doc.setFontSize(9);
-                doc.setFont("helvetica", "italic");
-                doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
-                
-                doc.save(`Laporan_Pembina_${tglCetak}.pdf`);
-            }
-        }
 
         // PENAMBAHAN CACHE-BUSTER UNTUK MENCEGAH MASALAH CORS GAMBAR 
         function getBase64ImageFromUrl(imageUrl, mimeType = 'image/jpeg') {
@@ -1497,149 +1425,201 @@
             const tglCetak = formatTanggalIndo(new Date().toISOString().split('T')[0]);
 
             if (jenisLaporanAktif === 'peserta') {
-                const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
+                const doc = new jsPDF('p', 'mm', 'a4'); 
                 const mapels = ['Matematika', 'IPA', 'IPS'];
+                const prefixMap = { 'Matematika': '001', 'IPA': '002', 'IPS': '003' };
                 
+                let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png', 'image/png');
+
                 mapels.forEach((mapel, index) => {
                     if (index > 0) doc.addPage();
                     let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
                     
-                    doc.setFontSize(16); doc.setFont("helvetica", "bold");
-                    doc.text("REKAPITULASI PESERTA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
-                    doc.setFontSize(12); doc.setTextColor(220, 38, 38); 
-                    doc.text(`BIDANG STUDI: ${mapel.toUpperCase()}`, 148, 28, { align: "center" });
-                    doc.setTextColor(0, 0, 0); 
+                    if (logoBase64) doc.addImage(logoBase64, 'PNG', 15, 10, 32, 30);
+
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(14);
+                    doc.text("PEMERINTAH KABUPATEN PAMEKASAN", 118, 15, { align: "center" });
+                    doc.setFontSize(16);
+                    doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 118, 22, { align: "center" });
+                    doc.setFontSize(14);
+                    doc.text("KORWILCAM BIDIKBUD KECAMATAN WARU", 118, 29, { align: "center" });
                     
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text("@mail:Cabang.dinas.waru@gmail.com", 118, 34, { align: "center" });
+                    doc.text("Alamat : Jalan Raya Waru Pamekasan – Kode Pos 69353", 118, 39, { align: "center" });
+
+                    doc.setLineWidth(1); doc.line(15, 43, 195, 43);
+                    doc.setLineWidth(0.3); doc.line(15, 44.5, 195, 44.5);
+                    
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(12);
+                    doc.text("DAFTAR PESERTA OLIMPIADE SAINS NASIONAL (OSN) SD", 105, 53, { align: "center" });
+                    doc.text("TINGKAT KECAMATAN WARU TAHUN 2026", 105, 59, { align: "center" });
+                    doc.text(`BIDANG : ${mapel.toUpperCase()}`, 105, 66, { align: "center" });
+
                     let bodyData = [];
-                    pesertaMapel.forEach((p, i) => { bodyData.push([i + 1, p.sekolah, p.nama, p.nisn, p.kelas, p.namaPembina]); });
+                    pesertaMapel.forEach((p, i) => { 
+                        let noUrutPad = String(i + 1).padStart(3, '0');
+                        let noPeserta = `${prefixMap[mapel]}-26-00${noUrutPad}`;
+                        bodyData.push([i + 1, noPeserta, p.nama.toUpperCase(), p.sekolah.toUpperCase(), p.kelas]); 
+                    });
+
+                    if (bodyData.length === 0) bodyData.push(['-', '-', 'Belum ada pendaftar', '-', '-']);
 
                     doc.autoTable({
-                startY: 35,
-                head: [['No', 'Asal Sekolah', 'Nama Siswa', 'NISN', 'Kelas', 'Pembina Pendamping']],
-                body: bodyData,
-                theme: 'grid', styles: { fontSize: 10, font: 'helvetica' },
-                headStyles: { fillColor: [185, 28, 28] }, margin: { top: 35, bottom: 20 }
-            });
-            doc.setFontSize(9); doc.setFont("helvetica", "italic");
-            doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
-        });
-        doc.save(`Laporan_Peserta_PerMapel_${tglCetak}.pdf`);
-        Swal.close();
-    } 
-    else if (jenisLaporanAktif === 'pembina') {
-        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
-        doc.setFontSize(16); doc.setFont("helvetica", "bold");
-        doc.text("REKAPITULASI PEMBINA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
-        
-        let bodyData = [];
-        dataLaporanAktif.forEach((p, i) => { bodyData.push([i + 1, p.namaSekolah, p.nama, p.nip, p.nuptk, p.wa]); });
+                        startY: 72,
+                        head: [['No.', 'No. Peserta', 'Nama', 'Sekolah', 'Kelas']], 
+                        body: bodyData,
+                        theme: 'grid', 
+                        styles: { 
+                            fontSize: 9, font: 'helvetica', valign: 'middle', cellPadding: 3, textColor: [0, 0, 0],
+                            lineColor: [0, 0, 0], lineWidth: 0.2 
+                        },
+                        headStyles: { fillColor: [230, 230, 230], textColor: [0, 0, 0], halign: 'center', fontStyle: 'bold' },
+                        columnStyles: {
+                            0: { halign: 'center', cellWidth: 12 },
+                            1: { halign: 'center', cellWidth: 33 },
+                            2: { cellWidth: 65 },
+                            3: { cellWidth: 55 },
+                            4: { halign: 'center', cellWidth: 15 }
+                        },
+                        margin: { left: 15, right: 15 }
+                    });
 
-        doc.autoTable({
-            startY: 30, head: [['No', 'Asal Sekolah', 'Nama Pembina', 'NIP', 'NUPTK', 'No WhatsApp']],
-            body: bodyData, theme: 'grid', styles: { fontSize: 10, font: 'helvetica' },
-            headStyles: { fillColor: [21, 128, 61] }, margin: { top: 30, bottom: 20 }
-        });
-        doc.setFontSize(9); doc.setFont("helvetica", "italic");
-        doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
-        doc.save(`Laporan_Pembina_${tglCetak}.pdf`);
-        Swal.close();
-    }
-    else if (jenisLaporanAktif === 'daftar_hadir') {
-        const doc = new jsPDF('p', 'mm', 'a4'); // Portrait untuk Daftar Hadir
-        const mapels = ['Matematika', 'IPA', 'IPS'];
-        const prefixMap = { 'Matematika': '001', 'IPA': '002', 'IPS': '003' };
-        
-        // Tambahkan parameter 'image/png' di belakangnya
-        let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png', 'image/png');
+                    let finalY = doc.lastAutoTable.finalY + 15;
+                    if (finalY > 230) { doc.addPage(); finalY = 20; } 
 
-        mapels.forEach((mapel, index) => {
-            if (index > 0) doc.addPage();
-            let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
-            
-            // 1. Gambar Logo
-            if (logoBase64) doc.addImage(logoBase64, 'PNG', 15, 10, 32, 30);
+                    doc.setFontSize(10);
+                    doc.setFont("helvetica", "normal");
+                    doc.text("Pamekasan, 15 Agustus 2026", 155, finalY, { align: "center" });
+                    doc.text("Ketua Pelaksana OSN-SD", 155, finalY + 5, { align: "center" });
+                    doc.text("Kecamatan Waru", 155, finalY + 10, { align: "center" });
 
-            // 2. Teks KOP Surat (Sudah digeser ke kanan)
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(14);
-            doc.text("PEMERINTAH KABUPATEN PAMEKASAN", 118, 15, { align: "center" });
-            doc.setFontSize(16);
-            doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 118, 22, { align: "center" });
-            doc.setFontSize(14);
-            doc.text("KORWILCAM BIDIKBUD KECAMATAN WARU", 118, 29, { align: "center" });
-
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.text("@mail:Cabang.dinas.waru@gmail.com", 118, 34, { align: "center" });
-            doc.text("Alamat : Jalan Raya Waru Pamekasan – Kode Pos 69353", 118, 39, { align: "center" });
-
-            // 3. Garis Ganda Pembatas
-            doc.setLineWidth(1); doc.line(15, 43, 195, 43); // Garis Tebal
-            doc.setLineWidth(0.3); doc.line(15, 44.5, 195, 44.5); // Garis Tipis
-            
-            // 4. Judul
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
-            doc.text("DAFTAR HADIR OLIMPIADE SAINS NASIONAL (OSN) SD", 105, 53, { align: "center" });
-            doc.text("TINGKAT KECAMATAN WARU TAHUN 2026", 105, 59, { align: "center" });
-
-            // 5. Informasi Pelaksanaan
-            doc.setFontSize(10); doc.setFont("helvetica", "normal");
-            doc.text("Hari/Tanggal", 15, 68);  doc.text(": Rabu, 26 Agustus 2026", 40, 68);
-            doc.text("Tempat", 15, 73);        doc.text(": SDN Waru Barat 4", 40, 73);
-            doc.text("Bidang", 15, 78);        doc.text(`: ${mapel.toUpperCase()}`, 40, 78);
-
-            // 6. Susun Data Tabel (Otomatisasi No Peserta & TTD Zig-zag)
-            let bodyData = [];
-            pesertaMapel.forEach((p, i) => { 
-                // Format: MTK-26-001
-                let noUrutPad = String(i + 1).padStart(3, '0');
-                let noPeserta = `${prefixMap[mapel]}-26-00${noUrutPad}`;
+                    doc.setFont("helvetica", "bold");
+                    doc.text("RETNO MARETA, S.Pd.SD", 155, finalY + 30, { align: "center" });
+                    doc.setFont("helvetica", "normal");
+                    doc.text("NIP. 198303292010012034", 155, finalY + 35, { align: "center" });
+                });
                 
-                // Format TTD Zig-zag (Ganjil di Kiri, Genap menjorok ke Kanan)
-                let ttd = (i % 2 === 0) ? `${i + 1}. ` : `              ${i + 1}. `;
+                doc.save(`Daftar_Peserta_OSN_SD_Waru_${tglCetak}.pdf`);
+                Swal.close();
+            }
+            else if (jenisLaporanAktif === 'pembina') {
+                const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
+                doc.setFontSize(16); doc.setFont("helvetica", "bold");
+                doc.text("REKAPITULASI PEMBINA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
+                
+                let bodyData = [];
+                dataLaporanAktif.forEach((p, i) => { bodyData.push([i + 1, p.namaSekolah, p.nama, p.nip, p.nuptk, p.wa]); });
 
-                bodyData.push([i + 1, noPeserta, p.nama.toUpperCase(), p.sekolah, p.kelas, ttd]); 
-            });
+                doc.autoTable({
+                    startY: 30, head: [['No', 'Asal Sekolah', 'Nama Pembina', 'NIP', 'NUPTK', 'No WhatsApp']],
+                    body: bodyData, theme: 'grid', styles: { fontSize: 10, font: 'helvetica' },
+                    headStyles: { fillColor: [21, 128, 61] }, margin: { top: 30, bottom: 20 }
+                });
+                doc.setFontSize(9); doc.setFont("helvetica", "italic");
+                doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
+                doc.save(`Laporan_Pembina_${tglCetak}.pdf`);
+                Swal.close();
+            }
+            else if (jenisLaporanAktif === 'daftar_hadir') {
+                const doc = new jsPDF('p', 'mm', 'a4'); // Portrait untuk Daftar Hadir
+                const mapels = ['Matematika', 'IPA', 'IPS'];
+                const prefixMap = { 'Matematika': '001', 'IPA': '002', 'IPS': '003' };
+                
+                // Tambahkan parameter 'image/png' di belakangnya
+                let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png', 'image/png');
 
-            // Tabel Kosong jika tidak ada data
-            if (bodyData.length === 0) bodyData.push(['-', '-', 'Belum ada pendaftar', '-', '-', '-']);
+                mapels.forEach((mapel, index) => {
+                    if (index > 0) doc.addPage();
+                    let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
+                    
+                    // 1. Gambar Logo
+                    if (logoBase64) doc.addImage(logoBase64, 'PNG', 15, 10, 32, 30);
 
-            doc.autoTable({
-                startY: 83,
-                head: [['No.', 'No. Peserta', 'Nama', 'Sekolah', 'Kelas', 'TTD']],
-                body: bodyData,
-                theme: 'grid', 
-                styles: { fontSize: 8, font: 'helvetica', valign: 'middle', cellPadding: 3, textColor: 0, lineColor: [0, 0, 0], lineWidth: 0.2 },
-                headStyles: { fillColor: [230, 230, 230], textColor: 0, halign: 'center', fontStyle: 'bold' },
-                columnStyles: {
-                    0: { halign: 'center', cellWidth: 12 },
-                    1: { halign: 'center', cellWidth: 25 },
-                    2: { cellWidth: 58 },
-                    3: { cellWidth: 41 },
-                    4: { halign: 'center', cellWidth: 14 },
-                    5: { cellWidth: 30 } // Kolom TTD statis lebar 25mm
-                },
-                margin: { left: 15, right: 15 }
-            });
+                    // 2. Teks KOP Surat (Sudah digeser ke kanan)
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(14);
+                    doc.text("PEMERINTAH KABUPATEN PAMEKASAN", 118, 15, { align: "center" });
+                    doc.setFontSize(16);
+                    doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 118, 22, { align: "center" });
+                    doc.setFontSize(14);
+                    doc.text("KORWILCAM BIDIKBUD KECAMATAN WARU", 118, 29, { align: "center" });
 
-            // 7. Area Tanda Tangan Petugas Registrasi di Bawah
-            let finalY = doc.lastAutoTable.finalY + 15;
-            
-            // Cegah area TTD terpotong ke halaman baru
-            if (finalY > 240) { doc.addPage(); finalY = 20; }
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text("@mail:Cabang.dinas.waru@gmail.com", 118, 34, { align: "center" });
+                    doc.text("Alamat : Jalan Raya Waru Pamekasan – Kode Pos 69353", 118, 39, { align: "center" });
 
-            doc.setFont("helvetica", "normal");
-            doc.text("Petugas Registrasi,", 15, finalY);
-            doc.text("Nama", 15, finalY + 12);         doc.text(": .......................................", 40, finalY + 12);
-            doc.text("Jabatan", 15, finalY + 19);      doc.text(": .......................................", 40, finalY + 19);
-            doc.text("Tanda Tangan", 15, finalY + 26); doc.text(": .......................................", 40, finalY + 26);
-        });
-        
-        doc.save(`Daftar_Hadir_OSN_SD_Waru_${tglCetak}.pdf`);
-        Swal.close();
-    }
-}
+                    // 3. Garis Ganda Pembatas
+                    doc.setLineWidth(1); doc.line(15, 43, 195, 43); // Garis Tebal
+                    doc.setLineWidth(0.3); doc.line(15, 44.5, 195, 44.5); // Garis Tipis
+                    
+                    // 4. Judul
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(12);
+                    doc.text("DAFTAR HADIR OLIMPIADE SAINS NASIONAL (OSN) SD", 105, 53, { align: "center" });
+                    doc.text("TINGKAT KECAMATAN WARU TAHUN 2026", 105, 59, { align: "center" });
+
+                    // 5. Informasi Pelaksanaan
+                    doc.setFontSize(10); doc.setFont("helvetica", "normal");
+                    doc.text("Hari/Tanggal", 15, 68);  doc.text(": Rabu, 26 Agustus 2026", 40, 68);
+                    doc.text("Tempat", 15, 73);        doc.text(": SDN Waru Barat 4", 40, 73);
+                    doc.text("Bidang", 15, 78);        doc.text(`: ${mapel.toUpperCase()}`, 40, 78);
+
+                    // 6. Susun Data Tabel (Otomatisasi No Peserta & TTD Zig-zag)
+                    let bodyData = [];
+                    pesertaMapel.forEach((p, i) => { 
+                        // Format: MTK-26-001
+                        let noUrutPad = String(i + 1).padStart(3, '0');
+                        let noPeserta = `${prefixMap[mapel]}-26-00${noUrutPad}`;
+                        
+                        // Format TTD Zig-zag (Ganjil di Kiri, Genap menjorok ke Kanan)
+                        let ttd = (i % 2 === 0) ? `${i + 1}. ` : `              ${i + 1}. `;
+
+                        bodyData.push([i + 1, noPeserta, p.nama.toUpperCase(), p.sekolah, p.kelas, ttd]); 
+                    });
+
+                    // Tabel Kosong jika tidak ada data
+                    if (bodyData.length === 0) bodyData.push(['-', '-', 'Belum ada pendaftar', '-', '-', '-']);
+
+                    doc.autoTable({
+                        startY: 83,
+                        head: [['No.', 'No. Peserta', 'Nama', 'Sekolah', 'Kelas', 'TTD']],
+                        body: bodyData,
+                        theme: 'grid', 
+                        styles: { fontSize: 8, font: 'helvetica', valign: 'middle', cellPadding: 3, textColor: 0, lineColor: [0, 0, 0], lineWidth: 0.2 },
+                        headStyles: { fillColor: [230, 230, 230], textColor: 0, halign: 'center', fontStyle: 'bold' },
+                        columnStyles: {
+                            0: { halign: 'center', cellWidth: 12 },
+                            1: { halign: 'center', cellWidth: 25 },
+                            2: { cellWidth: 58 },
+                            3: { cellWidth: 41 },
+                            4: { halign: 'center', cellWidth: 14 },
+                            5: { cellWidth: 30 } // Kolom TTD statis lebar 25mm
+                        },
+                        margin: { left: 15, right: 15 }
+                    });
+
+                    // 7. Area Tanda Tangan Petugas Registrasi di Bawah
+                    let finalY = doc.lastAutoTable.finalY + 15;
+                    
+                    // Cegah area TTD terpotong ke halaman baru
+                    if (finalY > 240) { doc.addPage(); finalY = 20; }
+
+                    doc.setFont("helvetica", "normal");
+                    doc.text("Petugas Registrasi,", 15, finalY);
+                    doc.text("Nama", 15, finalY + 12);         doc.text(": .......................................", 40, finalY + 12);
+                    doc.text("Jabatan", 15, finalY + 19);      doc.text(": .......................................", 40, finalY + 19);
+                    doc.text("Tanda Tangan", 15, finalY + 26); doc.text(": .......................................", 40, finalY + 26);
+                });
+                
+                doc.save(`Daftar_Hadir_OSN_SD_Waru_${tglCetak}.pdf`);
+                Swal.close();
+            }
+        }
 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
