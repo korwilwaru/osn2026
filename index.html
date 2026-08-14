@@ -69,7 +69,6 @@
                 <button onclick="bukaHalaman('pagePendaftaran')" class="text-yellow-200 w-full flex items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pagePendaftaran"><i class="fas fa-users w-5 text-center"></i><span>Pendaftaran Siswa</span></button>
                 
                 <button id="menuPengaturan" onclick="bukaHalaman('pagePengaturan')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pagePengaturan"><i class="fas fa-cogs w-5 text-center"></i><span>Set Periode</span></button>
-                <button id="menuCetakKartu" onclick="bukaHalaman('pageCetakKartu')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageCetakKartu"><i class="fas fa-id-badge w-5 text-center"></i><span>Cetak Kartu Peserta</span></button>
                 <button id="menuLaporan" onclick="bukaHalaman('pageLaporan')" class="hidden w-full items-center space-x-3 px-4 py-3 rounded hover:bg-red-800 transition-colors text-left menu-btn" data-target="pageLaporan"><i class="fas fa-print w-5 text-center"></i><span>Laporan</span></button>
             </nav>
             <div class="p-4 border-t border-red-700">
@@ -116,7 +115,18 @@
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="p-5 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 space-y-3 sm:space-y-0">
                             <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-user-tie mr-2"></i>Daftar Pembina Pendamping</h3>
-                            <button onclick="bukaModalPembina()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition"><i class="fas fa-user-plus mr-2"></i>Tambah Pembina</button>
+                            
+                            <!-- Bungkus tombol dengan flex container agar sejajar -->
+                            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                <!-- Tombol Cetak Kartu Pembina (Hanya untuk Admin) -->
+                                <button id="btnCetakKartuPembina" onclick="buatDanCetakKartuPembina()" class="hidden w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition">
+                                    <i class="fas fa-print mr-2"></i>Cetak Kartu Massal
+                                </button>
+
+                                <button onclick="bukaModalPembina()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition">
+                                    <i class="fas fa-user-plus mr-2"></i>Tambah Pembina
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left whitespace-nowrap">
@@ -146,7 +156,19 @@
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="p-5 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 space-y-3 sm:space-y-0">
                             <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-list-alt mr-2"></i>Data Peserta Lomba</h3>
-                            <button id="btnTambahData" onclick="bukaModalPeserta()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition"><i class="fas fa-user-plus mr-2"></i>Tambah Peserta</button>
+                            
+                            <!-- Bungkus tombol dengan flex container agar sejajar -->
+                            <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                <!-- Tombol Cetak Kartu (Disembunyikan secara default, hanya untuk Admin) -->
+                                <button id="btnCetakKartu" onclick="buatDanCetakKartu()" class="hidden w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition">
+                                    <i class="fas fa-print mr-2"></i>Cetak Kartu Massal
+                                </button>
+                                
+                                <!-- Tombol Tambah Peserta Lama -->
+                                <button id="btnTambahData" onclick="bukaModalPeserta()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition">
+                                    <i class="fas fa-user-plus mr-2"></i>Tambah Peserta
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left whitespace-nowrap">
@@ -200,6 +222,7 @@
                                 <select id="pilihanLaporan" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-red-500 outline-none">
                                     <option value="peserta">Rekap Peserta Lomba</option>
                                     <option value="pembina">Rekap Pembina Pendamping</option>
+                                    <option value="daftar_hadir">Daftar Hadir Peserta (Per Mapel)</option>
                                 </select>
                             </div>
                             <div class="flex items-end gap-2">
@@ -394,9 +417,11 @@
                         document.getElementById('menuLaporan').classList.remove('hidden');
                         document.getElementById('menuLaporan').classList.add('flex');
                     }
-                    if(document.getElementById('menuCetakKartu')) {
-                        document.getElementById('menuCetakKartu').classList.remove('hidden');
-                        document.getElementById('menuCetakKartu').classList.add('flex');
+                    if(document.getElementById('btnCetakKartu')) {
+                        document.getElementById('btnCetakKartu').classList.remove('hidden');
+                    }
+                    if(document.getElementById('btnCetakKartuPembina')) {
+                        document.getElementById('btnCetakKartuPembina').classList.remove('hidden');
                     }
                 }
 
@@ -1004,7 +1029,8 @@
             btnPdf.classList.add('opacity-50', 'cursor-not-allowed');
 
             try {
-                let actionCode = pilihan === 'peserta' ? 'getPeserta' : 'getPembina';
+                // Jika pilihan daftar hadir, kita ambil data peserta
+                let actionCode = (pilihan === 'peserta' || pilihan === 'daftar_hadir') ? 'getPeserta' : 'getPembina';
                 const res = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: actionCode, npsn: sessionStorage.getItem('npsn'), role: sessionStorage.getItem('role') })
@@ -1014,7 +1040,8 @@
                 if (response.status === 'success') {
                     let dataMentah = response.data;
                     
-                    if (pilihan === 'peserta') {
+                    // Pengurutan (Sorting)
+                    if (pilihan === 'peserta' || pilihan === 'daftar_hadir') {
                         dataMentah.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                     } else if (pilihan === 'pembina') {
                         dataMentah.sort((a, b) => {
@@ -1032,7 +1059,8 @@
                         return;
                     }
 
-                    if (pilihan === 'peserta') {
+                    // Pratinjau Daftar Hadir / Rekap Peserta
+                    if (pilihan === 'peserta' || pilihan === 'daftar_hadir') {
                         const mapels = ['Matematika', 'IPA', 'IPS'];
                         let htmlOutput = '';
                         
@@ -1076,6 +1104,7 @@
                         area.className = "p-0 rounded-lg"; 
                         area.innerHTML = htmlOutput;
                     } 
+                    // Pratinjau Rekap Pembina
                     else if (pilihan === 'pembina') {
                         let htmlOutput = `<h4 class="font-bold text-lg text-green-800 mt-2 mb-4 border-b-2 border-green-200 pb-1">Daftar Seluruh Pembina <span class="text-sm font-normal text-gray-500">(${dataLaporanAktif.length} Orang)</span></h4>`;
                         
@@ -1214,8 +1243,13 @@
         }
 
         async function buatDanCetakKartu() {
-            const status = document.getElementById('statusCetakKartu');
-            status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data peserta...';
+            // Munculkan pop-up loading SweetAlert
+            Swal.fire({
+                title: 'Memproses...',
+                html: 'Mengambil data peserta...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
             
             try {
                 const res = await fetch(SCRIPT_URL, {
@@ -1228,11 +1262,12 @@
                     const data = response.data;
                     
                     if(data.length === 0) {
-                        status.innerHTML = '<span class="text-red-500">Tidak ada peserta untuk dicetak.</span>';
+                        Swal.fire('Kosong', 'Tidak ada peserta untuk dicetak.', 'info');
                         return;
                     }
 
-                    status.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses gambar dan merakit PDF (Ini mungkin butuh waktu beberapa detik)...';
+                    // Update teks loading pada pop-up
+                    Swal.update({ html: 'Memproses gambar dan merakit PDF (Ini mungkin butuh waktu beberapa detik)...' });
 
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4'); 
@@ -1263,7 +1298,6 @@
 
                         let bgUrl = '';
                         
-                        // PENAMBAHAN BASE_URL AGAR BACKGROUND MERUJUK KE HOSTING LEMPERDUA
                         if (p.mapel === 'Matematika') bgUrl = BASE_URL + 'matematika.jpg';
                         else if (p.mapel === 'IPA') bgUrl = BASE_URL + 'ipa.jpg';
                         else if (p.mapel === 'IPS') bgUrl = BASE_URL + 'ips.jpg';
@@ -1312,13 +1346,289 @@
                     }
 
                     doc.save('Kartu_Peserta_OSN_SD_Waru.pdf');
-                    status.innerHTML = '<span class="text-green-600"><i class="fas fa-check mr-2"></i> PDF berhasil diunduh!</span>';
+                    
+                    // Tutup pop-up loading dan tampilkan centang sukses
+                    Swal.fire('Berhasil!', 'PDF Kartu Peserta berhasil diunduh.', 'success');
+                } else {
+                    Swal.fire('Gagal', response.message, 'error');
                 }
             } catch (err) {
                 console.error(err);
-                status.innerHTML = '<span class="text-red-500">Gagal membuat PDF. Periksa log konsol browser.</span>';
+                Swal.fire('Error', 'Gagal membuat PDF. Periksa log konsol browser.', 'error');
             }
         }
+
+        async function buatDanCetakKartuPembina() {
+            // Munculkan pop-up loading SweetAlert
+            Swal.fire({
+                title: 'Memproses...',
+                html: 'Mengambil data pembina...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            
+            try {
+                // Ambil data pembina dari backend
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getPembina', npsn: sessionStorage.getItem('npsn'), role: sessionStorage.getItem('role') })
+                });
+                const response = await res.json();
+
+                if (response.status === 'success') {
+                    const data = response.data;
+                    
+                    if(data.length === 0) {
+                        Swal.fire('Kosong', 'Tidak ada data pembina untuk dicetak.', 'info');
+                        return;
+                    }
+
+                    Swal.update({ html: 'Memproses gambar dan merakit PDF (Ini mungkin butuh waktu beberapa detik)...' });
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('p', 'mm', 'a4'); 
+
+                    // Pengaturan Ukuran (Identik dengan Peserta)
+                    const cardW = 85;
+                    const cardH = 105;
+                    const marginX = 15; 
+                    const marginY = 20; 
+                    const gapX = 10;    
+                    const gapY = 10;    
+
+                    let kartuKe = 0; 
+
+                    for (let i = 0; i < data.length; i++) {
+                        let p = data[i];
+
+                        let urutanDiHalaman = kartuKe % 4; 
+                        if (urutanDiHalaman === 0 && kartuKe > 0) doc.addPage(); 
+
+                        let kolom = urutanDiHalaman % 2; 
+                        let baris = Math.floor(urutanDiHalaman / 2); 
+
+                        let cardX = marginX + (kolom * (cardW + gapX));
+                        let cardY = marginY + (baris * (cardH + gapY));
+
+                        // Garis potong luar
+                        doc.setDrawColor(200, 200, 200);
+                        doc.rect(cardX, cardY, cardW, cardH);
+
+                        // Latar belakang kartu khusus pembina
+                        let bgUrl = BASE_URL + 'pembina.jpg';
+                        let bgBase64 = await getBase64ImageFromUrl(bgUrl);
+                        if (bgBase64) {
+                            doc.addImage(bgBase64, 'JPEG', cardX, cardY, cardW, cardH); 
+                        }
+
+                        // Kalkulasi titik tengah untuk tata letak
+                        let contentStartX = cardX + 15;
+                        let contentW = cardW - 15; 
+                        let centerX = contentStartX + (contentW / 2); 
+
+                        // Posisi dan ukuran Foto Pembina
+                        let fotoW = 40;
+                        let fotoH = 40;
+                        let fotoY = cardY + 35; 
+                        let fotoX = centerX - (fotoW / 2); 
+
+                        let fotoUrl = getThumbUrl(p.fotoUrl);
+                        let fotoBase64 = await getBase64ImageFromUrl(fotoUrl);
+
+                        if (fotoBase64) {
+                            doc.addImage(fotoBase64, 'JPEG', fotoX, fotoY, fotoW, fotoH);
+                        } else {
+                            // Kotak abu-abu jika foto gagal dimuat
+                            doc.setFillColor(220, 220, 220);
+                            doc.rect(fotoX, fotoY, fotoW, fotoH, 'F');
+                        }
+                        
+                        // Bingkai foto
+                        doc.setDrawColor(0, 0, 0); 
+                        doc.rect(fotoX, fotoY, fotoW, fotoH);
+
+                        // Nama Pembina
+                        let textNamaY = fotoY + 49; 
+                        doc.setFontSize(10);
+                        doc.setFont("helvetica", "bold");
+                        doc.setTextColor(0, 0, 0);
+                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); 
+
+                        // Nama Sekolah Pembina
+                        let textSekolahY = textNamaY + 6; 
+                        doc.setFontSize(9);
+                        doc.setFont("helvetica", "normal");
+                        doc.text(p.namaSekolah, centerX, textSekolahY, { align: 'center' });
+
+                        kartuKe++; 
+                    }
+
+                    // Simpan PDF
+                    doc.save('Kartu_Pembina_OSN_SD_Waru.pdf');
+                    
+                    Swal.fire('Berhasil!', 'PDF Kartu Pembina berhasil diunduh.', 'success');
+                } else {
+                    Swal.fire('Gagal', response.message, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Gagal membuat PDF. Periksa log konsol browser.', 'error');
+            }
+        }
+
+        async function downloadPDFLaporan() {
+            if (!dataLaporanAktif || dataLaporanAktif.length === 0) return;
+
+            // Munculkan loading (karena mengambil logo butuh waktu sepersekian detik)
+            Swal.fire({ title: 'Membuat PDF...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            const { jsPDF } = window.jspdf;
+            const tglCetak = formatTanggalIndo(new Date().toISOString().split('T')[0]);
+
+            if (jenisLaporanAktif === 'peserta') {
+                const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
+                const mapels = ['Matematika', 'IPA', 'IPS'];
+                
+                mapels.forEach((mapel, index) => {
+                    if (index > 0) doc.addPage();
+                    let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
+                    
+                    doc.setFontSize(16); doc.setFont("helvetica", "bold");
+                    doc.text("REKAPITULASI PESERTA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
+                    doc.setFontSize(12); doc.setTextColor(220, 38, 38); 
+                    doc.text(`BIDANG STUDI: ${mapel.toUpperCase()}`, 148, 28, { align: "center" });
+                    doc.setTextColor(0, 0, 0); 
+                    
+                    let bodyData = [];
+                    pesertaMapel.forEach((p, i) => { bodyData.push([i + 1, p.sekolah, p.nama, p.nisn, p.kelas, p.namaPembina]); });
+
+                    doc.autoTable({
+                startY: 35,
+                head: [['No', 'Asal Sekolah', 'Nama Siswa', 'NISN', 'Kelas', 'Pembina Pendamping']],
+                body: bodyData,
+                theme: 'grid', styles: { fontSize: 10, font: 'helvetica' },
+                headStyles: { fillColor: [185, 28, 28] }, margin: { top: 35, bottom: 20 }
+            });
+            doc.setFontSize(9); doc.setFont("helvetica", "italic");
+            doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
+        });
+        doc.save(`Laporan_Peserta_PerMapel_${tglCetak}.pdf`);
+        Swal.close();
+    } 
+    else if (jenisLaporanAktif === 'pembina') {
+        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape
+        doc.setFontSize(16); doc.setFont("helvetica", "bold");
+        doc.text("REKAPITULASI PEMBINA OSN SD KECAMATAN WARU TAHUN 2026", 148, 20, { align: "center" });
+        
+        let bodyData = [];
+        dataLaporanAktif.forEach((p, i) => { bodyData.push([i + 1, p.namaSekolah, p.nama, p.nip, p.nuptk, p.wa]); });
+
+        doc.autoTable({
+            startY: 30, head: [['No', 'Asal Sekolah', 'Nama Pembina', 'NIP', 'NUPTK', 'No WhatsApp']],
+            body: bodyData, theme: 'grid', styles: { fontSize: 10, font: 'helvetica' },
+            headStyles: { fillColor: [21, 128, 61] }, margin: { top: 30, bottom: 20 }
+        });
+        doc.setFontSize(9); doc.setFont("helvetica", "italic");
+        doc.text(`Dicetak pada: ${tglCetak}`, 15, doc.internal.pageSize.height - 10);
+        doc.save(`Laporan_Pembina_${tglCetak}.pdf`);
+        Swal.close();
+    }
+    else if (jenisLaporanAktif === 'daftar_hadir') {
+        const doc = new jsPDF('p', 'mm', 'a4'); // Portrait untuk Daftar Hadir
+        const mapels = ['Matematika', 'IPA', 'IPS'];
+        const prefixMap = { 'Matematika': 'MTK', 'IPA': 'IPA', 'IPS': 'IPS' };
+        
+        // Ambil logo dari Wikimedia (Sumber universal dan aman dari CORS)
+        let logoBase64 = await getBase64ImageFromUrl('https://upload.wikimedia.org/wikipedia/commons/8/84/Lambang_Daerah_Kab._Pamekasan%2C_Jawa_Timur.png');
+
+        mapels.forEach((mapel, index) => {
+            if (index > 0) doc.addPage();
+            let pesertaMapel = dataLaporanAktif.filter(p => p.mapel === mapel);
+            
+            // 1. Gambar Logo
+            if (logoBase64) doc.addImage(logoBase64, 'PNG', 20, 10, 22, 28);
+
+            // 2. Teks KOP Surat (Sesuai Gambar Referensi)
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text("PEMERINTAH KABUPATEN PAMEKASAN", 105, 15, { align: "center" });
+            doc.setFontSize(16);
+            doc.text("DINAS PENDIDIKAN DAN KEBUDAYAAN", 105, 22, { align: "center" });
+            doc.setFontSize(14);
+            doc.text("KORWILCAM BIDIKBUD KECAMATAN WARU", 105, 29, { align: "center" });
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text("@mail:Cabang.dinas.waru@gmail.com", 105, 34, { align: "center" });
+            doc.text("Alamat : Jalan Raya Waru Pamekasan – Kode Pos 69353", 105, 39, { align: "center" });
+
+            // 3. Garis Ganda Pembatas
+            doc.setLineWidth(1); doc.line(15, 43, 195, 43); // Garis Tebal
+            doc.setLineWidth(0.3); doc.line(15, 44.5, 195, 44.5); // Garis Tipis
+            
+            // 4. Judul
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text("DAFTAR HADIR OLIMPIADE SAINS NASIONAL (OSN) SD", 105, 53, { align: "center" });
+            doc.text("TINGKAT KECAMATAN WARU TAHUN 2026", 105, 59, { align: "center" });
+
+            // 5. Informasi Pelaksanaan
+            doc.setFontSize(10); doc.setFont("helvetica", "normal");
+            doc.text("Hari/Tanggal", 15, 68);  doc.text(": Rabu, 26 Agustus 2026", 40, 68);
+            doc.text("Tempat", 15, 73);        doc.text(": SDN Waru Barat 4", 40, 73);
+            doc.text("Bidang", 15, 78);        doc.text(`: ${mapel.toUpperCase()}`, 40, 78);
+
+            // 6. Susun Data Tabel (Otomatisasi No Peserta & TTD Zig-zag)
+            let bodyData = [];
+            pesertaMapel.forEach((p, i) => { 
+                // Format: MTK-26-001
+                let noUrutPad = String(i + 1).padStart(3, '0');
+                let noPeserta = `${prefixMap[mapel]}-26-${noUrutPad}`;
+                
+                // Format TTD Zig-zag (Ganjil di Kiri, Genap menjorok ke Kanan)
+                let ttd = (i % 2 === 0) ? `${i + 1}. ` : `          ${i + 1}. `;
+
+                bodyData.push([i + 1, noPeserta, p.nama, p.sekolah, p.kelas, ttd]); 
+            });
+
+            // Tabel Kosong jika tidak ada data
+            if (bodyData.length === 0) bodyData.push(['-', '-', 'Belum ada pendaftar', '-', '-', '-']);
+
+            doc.autoTable({
+                startY: 83,
+                head: [['No.', 'No. Peserta', 'Nama', 'Sekolah', 'Kelas', 'TTD']],
+                body: bodyData,
+                theme: 'grid', 
+                styles: { fontSize: 10, font: 'helvetica', valign: 'middle', cellPadding: 3 },
+                headStyles: { fillColor: [230, 230, 230], textColor: 20, halign: 'center', fontStyle: 'bold' },
+                columnStyles: {
+                    0: { halign: 'center', cellWidth: 10 },
+                    1: { halign: 'center', cellWidth: 35 },
+                    2: { cellWidth: 55 },
+                    3: { cellWidth: 45 },
+                    4: { halign: 'center', cellWidth: 15 },
+                    5: { cellWidth: 25 } // Kolom TTD statis lebar 25mm
+                },
+                margin: { left: 15, right: 15 }
+            });
+
+            // 7. Area Tanda Tangan Petugas Registrasi di Bawah
+            let finalY = doc.lastAutoTable.finalY + 15;
+            
+            // Cegah area TTD terpotong ke halaman baru
+            if (finalY > 240) { doc.addPage(); finalY = 20; }
+
+            doc.setFont("helvetica", "normal");
+            doc.text("Petugas Registrasi,", 130, finalY);
+            doc.text("Nama", 110, finalY + 12);         doc.text(": .......................................", 135, finalY + 12);
+            doc.text("Jabatan", 110, finalY + 19);      doc.text(": .......................................", 135, finalY + 19);
+            doc.text("Tanda Tangan", 110, finalY + 26); doc.text(": .......................................", 135, finalY + 26);
+        });
+        
+        doc.save(`Daftar_Hadir_OSN_SD_Waru_${tglCetak}.pdf`);
+        Swal.close();
+    }
+}
 
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
