@@ -1222,7 +1222,7 @@
         }
 
         // PENAMBAHAN CACHE-BUSTER UNTUK MENCEGAH MASALAH CORS GAMBAR 
-        function getBase64ImageFromUrl(imageUrl) {
+        function getBase64ImageFromUrl(imageUrl, mimeType = 'image/jpeg') {
             return new Promise((resolve) => {
                 let img = new Image();
                 img.crossOrigin = 'Anonymous'; 
@@ -1233,8 +1233,12 @@
                     let ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
                     
-                    // UBAH DI SINI: Gunakan 'image/png' agar transparan tidak jadi hitam
-                    resolve(canvas.toDataURL('image/png'));
+                    // Jika JPEG, beri kompresi 0.8 (80% kualitas) agar file PDF sangat kecil
+                    if (mimeType === 'image/jpeg') {
+                        resolve(canvas.toDataURL(mimeType, 0.8));
+                    } else {
+                        resolve(canvas.toDataURL(mimeType)); // Untuk PNG (Logo)
+                    }
                 };
                 img.onerror = () => resolve(null); 
                 
@@ -1303,9 +1307,12 @@
                         else if (p.mapel === 'IPA') bgUrl = BASE_URL + 'ipa.jpg';
                         else if (p.mapel === 'IPS') bgUrl = BASE_URL + 'ips.jpg';
 
-                        let bgBase64 = await getBase64ImageFromUrl(bgUrl);
+                        // Panggil secara eksplisit sebagai JPEG
+                        let bgBase64 = await getBase64ImageFromUrl(bgUrl, 'image/jpeg');
                         if (bgBase64) {
-                            doc.addImage(bgBase64, 'JPEG', cardX, cardY, cardW, cardH); 
+                            // RAHASIA FILE KECIL: Tambahkan p.mapel sebagai "Alias" dan 'FAST' sebagai kompresi
+                            // Ini membuat jsPDF mendaur ulang 1 gambar untuk semua kartu!
+                            doc.addImage(bgBase64, 'JPEG', cardX, cardY, cardW, cardH, p.mapel, 'FAST'); 
                         }
 
                         let contentStartX = cardX + 15;
@@ -1317,11 +1324,14 @@
                         let fotoY = cardY + 35; 
                         let fotoX = centerX - (fotoW / 2); 
 
+                        // --- BAGIAN FOTO SISWA ---
                         let fotoUrl = getThumbUrl(p.fotoUrl);
-                        let fotoBase64 = await getBase64ImageFromUrl(fotoUrl);
+                        // Panggil foto sebagai JPEG
+                        let fotoBase64 = await getBase64ImageFromUrl(fotoUrl, 'image/jpeg');
 
                         if (fotoBase64) {
-                            doc.addImage(fotoBase64, 'JPEG', fotoX, fotoY, fotoW, fotoH);
+                            // Foto tidak pakai Alias karena berbeda tiap anak
+                            doc.addImage(fotoBase64, 'JPEG', fotoX, fotoY, fotoW, fotoH, undefined, 'FAST');
                         } else {
                             doc.setFillColor(220, 220, 220);
                             doc.rect(fotoX, fotoY, fotoW, fotoH, 'F');
@@ -1335,7 +1345,7 @@
                         doc.setFontSize(10);
                         doc.setFont("helvetica", "bold");
                         doc.setTextColor(0, 0, 0);
-                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); 
+                        doc.text(p.nama.toUpperCase(), centerX, textNamaY, { align: 'center' }); 
 
                         let textSekolahY = textNamaY + 6; 
                         
@@ -1453,7 +1463,7 @@
                         doc.setFontSize(10);
                         doc.setFont("helvetica", "bold");
                         doc.setTextColor(0, 0, 0);
-                        doc.text(p.nama, centerX, textNamaY, { align: 'center' }); 
+                        doc.text(p.nama.toUpperCase(), centerX, textNamaY, { align: 'center' }); 
 
                         // Nama Sekolah Pembina
                         let textSekolahY = textNamaY + 6; 
@@ -1539,8 +1549,8 @@
         const mapels = ['Matematika', 'IPA', 'IPS'];
         const prefixMap = { 'Matematika': '001', 'IPA': '002', 'IPS': '003' };
         
-        // Ambil logo lokal dari server lemperdua.web.id
-        let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png');
+        // Tambahkan parameter 'image/png' di belakangnya
+        let logoBase64 = await getBase64ImageFromUrl(BASE_URL + 'logo-pamekasan.png', 'image/png');
 
         mapels.forEach((mapel, index) => {
             if (index > 0) doc.addPage();
